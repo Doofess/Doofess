@@ -55,7 +55,7 @@ Built with Python, PowerShell and TypeScript. [Repository](https://github.com/Do
 
 ## How I work with agents
 
-**Plans and passes.** Each feature starts as a short spec and a step-by-step plan in .md files. A main session hands the steps to subagents and runs the tests itself after each one, because an agent's summary of its own work is not proof that the work is correct.
+**Plans and passes.** Each feature starts as a short spec and a step-by-step plan in .md files. A main session usually hands the larger steps to subagents and runs the tests itself after each one, because an agent's summary of its own work is not proof that the work is correct.
 
 **Review before merge.** A pull request is merged only after a code review of its latest commit, with every finding checked against the code. I wrote a skill and a hook for this, and the hook refuses the merge until that review is recorded.
 
