@@ -109,7 +109,7 @@ PROJECTS = [
         stack=["Python", "PowerShell", "TypeScript"],
         note=None,
         links=[("Repository", "https://github.com/Doofess/claude-setup", True)],
-        main=("claude-setup-session-cards.png", "The modified session view, with prompts and agent runs as cards",
+        main=("claude-setup-session-cards.png", "The coding agent's session view, modified to show prompts and agent runs as cards",
               "Session view"),
         more=[],
         phones=[],

@@ -90,9 +90,10 @@ section, article { scroll-margin-top: 20px; }
 
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 28px; }
 .cols p { margin: 0 0 12px; }
-.topics-h { margin-top: 36px; }
-.topics { margin-top: 0; gap: 0 48px; }
-.topics p { margin: 0 0 18px; }
+.mypart { margin-top: 28px; }
+h3.topics-h { margin-top: 36px; }
+.topics { display: block; columns: 2; column-gap: 48px; margin-top: 0; }
+.topics p { margin: 0 0 18px; break-inside: avoid; }
 .stack { margin: 24px 0 0; display: grid; grid-template-columns: 220px 1fr; gap: 12px 24px; }
 .stack dt { color: var(--muted); }
 .stack dd { margin: 0; }
@@ -104,7 +105,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
   body { font-size: 16px; }
   .intro { padding: 48px 0 44px; }
   .project-text, .cols { grid-template-columns: 1fr; gap: 26px; }
-  .topics { gap: 0; }
+  .topics { columns: 1; }
   .stack { grid-template-columns: 1fr; gap: 2px; }
   .stack dd { margin-bottom: 14px; }
   .title-row .status { margin-left: 0; flex-basis: 100%; }
@@ -192,7 +193,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
     <article class="project" id="claude-setup" aria-labelledby="claude-setup-h">
       <div class="title-row"><h3 id="claude-setup-h">claude-setup</h3><span class="status muted small">Windows</span></div>
       <p class="tagline">My coding-agent setup, kept as code</p>
-      <a class="shot" href="img/claude-setup-session-cards.png"><img src="img/claude-setup-session-cards-1012.png" srcset="img/claude-setup-session-cards-1012.png 1012w, img/claude-setup-session-cards.png 1059w" sizes="(min-width: 1060px) 1012px, calc(100vw - 48px)" width="1012" height="524" loading="lazy" alt="The modified session view, with prompts and agent runs as cards"></a><p class="caption muted small">Session view</p>
+      <a class="shot" href="img/claude-setup-session-cards.png"><img src="img/claude-setup-session-cards-1012.png" srcset="img/claude-setup-session-cards-1012.png 1012w, img/claude-setup-session-cards.png 1059w" sizes="(min-width: 1060px) 1012px, calc(100vw - 48px)" width="1012" height="524" loading="lazy" alt="The coding agent&#x27;s session view, modified to show prompts and agent runs as cards"></a><p class="caption muted small">Session view</p>
       <div class="project-text">
         <ul class="points"><li>Work runs from .md plan files, with a large model planning, mid-size workers writing the code and a small model handling searches.</li><li>Plugins, MCP servers and skills are switched on per project, since each one costs tokens on every turn.</li><li>A status bar shows how full the context is and how much of the 5-hour and 7-day usage is left.</li><li>A hook written in Python refuses to merge a pull request until its latest commit has been reviewed.</li><li>One installer makes every Windows PC the same: settings, hooks, skills, plugins and terminal colours.</li></ul>
         <div class="facts">
@@ -208,7 +209,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
 
   <section class="section" id="work" aria-labelledby="work-h">
     <h2 id="work-h">How I work</h2>
-    <div class="cols">
+    <div class="mypart">
       <div>
         <h3 class="sub">My part</h3>
         <p>These projects are built with AI coding agents. In every one of them:</p>
@@ -222,7 +223,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
     </div>
     <h3 class="sub topics-h">The workflow</h3>
     <div class="cols topics">
-      <p><strong>Planning in .md files.</strong> Each feature starts as a short spec and a step-by-step plan, written as .md files in the repository. A session usually reads only the section it is working on, found by its heading, which leaves more of the context window for the code itself. Marshell's repository has 83 of these plans.</p>
+      <p><strong>Planning in .md files.</strong> Each feature starts as a short spec and a step-by-step plan, written as .md files in the repository. A session usually reads only the section it is working on, found by its heading, which leaves more of the context window for the code itself. Marshell's repository has more than 80 of these plans.</p>
       <p><strong>Work in checked passes.</strong> A main session holds the plan, and steps that touch more than a couple of files are usually handed to a subagent with a short brief. When the subagent reports back, the main session reads the report and runs the tests itself before the next step starts, because an agent's summary of its own work is not proof that the work is correct.</p>
       <p><strong>Review before every merge.</strong> A pull request is merged only after a code review of the exact commit that is about to merge. Every finding is checked against the code and ends either fixed or left unchanged with the reason found in the code. I wrote the pre-merge-review skill for this, along with a hook that refuses the merge until that review is recorded for the pull request's latest commit. The hook is there because an agent describes broken code with the same confidence as working code, so the review has to be something it cannot skip.</p>
       <p><strong>Models and reasoning effort.</strong> The model is matched to the task. A large model plans and reviews, a mid-size model writes the code, and a small, fast model handles searches, since a search rarely needs a large model's reasoning and costs far less on a small one. Reasoning effort is set the same way: it usually stays at the default and goes up for concurrency, parsers and security work, or after a first attempt has failed.</p>

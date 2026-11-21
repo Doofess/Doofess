@@ -46,9 +46,9 @@ Built with Tauri 2, Rust, React and TypeScript. [Repository](https://github.com/
 
 ### claude-setup
 
-My coding-agent setup, kept as code. It holds the skills, subagents and hooks described below, and one installer makes every Windows PC the same.
+My coding-agent setup, kept as code. It holds the skills, subagents and hooks behind the workflow described below, and one installer makes every Windows PC the same.
 
-<p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup.png" width="846" alt="claude-setup: the modified session view, with the prompt in a card and an agent run summed up in one line"></a></p>
+<p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup.png" width="846" alt="claude-setup: the coding agent's session view, modified to show the prompt in a card and an agent run summed up in one line"></a></p>
 <p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup-bar.png" width="753" alt="claude-setup: the status bar, with repository, branch, pull request, model, effort and the context meter"></a></p>
 
 Built with Python, PowerShell and TypeScript. [Repository](https://github.com/Doofess/claude-setup)
