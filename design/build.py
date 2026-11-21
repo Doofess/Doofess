@@ -11,20 +11,17 @@ Writes to assets/:
 
 The colours are GitHub's own greys and its blue, so the images read as part of the page.
 
-Button widths are measured with Segoe UI when the PC has it, and estimated otherwise.
-
 capture() and find_chrome() are for site.py, which draws the link preview image with a headless browser.
 """
 from __future__ import annotations
 
-import functools
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
 DESIGN = ROOT / "design"
@@ -85,11 +82,13 @@ def header(t: dict) -> str:
 # --------------------------------------------------------------------------
 # Buttons
 # --------------------------------------------------------------------------
+# The label width is the label in Segoe UI Semibold at 14 px plus 6%. It is written down here, not measured,
+# so the files come out the same on every PC.
 BUTTONS = [
-    # file name, label, icon, filled
-    ("portfolio", "Portfolio", None, True),
-    ("linkedin", "LinkedIn", "linkedin", False),
-    ("x", "X", "x", False),
+    # file name, label, label width, icon, filled
+    ("portfolio", "Portfolio", 59, None, True),
+    ("linkedin", "LinkedIn", 57, "linkedin", False),
+    ("x", "X", 9, "x", False),
 ]
 
 
@@ -99,23 +98,8 @@ def icon_path(slug: str) -> str:
     return svg.split(' d="', 1)[1].split('"', 1)[0]
 
 
-@functools.lru_cache(maxsize=None)
-def _semibold(size: int) -> ImageFont.FreeTypeFont | None:
-    try:
-        return ImageFont.truetype("seguisb.ttf", size * 8)
-    except OSError:
-        return None
-
-
-def text_width(s: str, size: int) -> int:
-    """Width of `s` in Segoe UI Semibold, with a margin for the wider fonts another PC may draw it with."""
-    font = _semibold(size)
-    return round((font.getlength(s) / 8 if font else len(s) * size * 0.58) * 1.06)
-
-
-def button(t: dict, label: str, icon: str | None, filled: bool) -> str:
+def button(t: dict, label: str, tw: int, icon: str | None, filled: bool) -> str:
     h, pad = 32, 14
-    tw = text_width(label, 14)
     w = pad + (16 + 8 if icon else 0) + tw + pad
     ink = "#ffffff" if filled else t["fg"]
     box = (f'<rect width="{w}" height="{h}" rx="6" fill="{t["button"]}"/>' if filled else
@@ -217,8 +201,8 @@ def main() -> None:
     ASSETS.mkdir(exist_ok=True)
     for theme, t in THEMES.items():
         (ASSETS / f"header-{theme}.svg").write_text(header(t), encoding="utf-8", newline="\n")
-        for slug, label, icon, filled in BUTTONS:
-            (ASSETS / f"button-{slug}-{theme}.svg").write_text(button(t, label, icon, filled), encoding="utf-8", newline="\n")
+        for slug, label, tw, icon, filled in BUTTONS:
+            (ASSETS / f"button-{slug}-{theme}.svg").write_text(button(t, label, tw, icon, filled), encoding="utf-8", newline="\n")
     for name, scale, width, height, panels in README_SHOTS:
         if len(sys.argv) > 1 and name not in sys.argv[1:]:
             continue

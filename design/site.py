@@ -3,6 +3,9 @@
     python design/site.py
 
 GitHub Pages serves docs/ at https://doofess.github.io/Doofess/.
+
+Run it on Windows 11: the link preview image is drawn by a headless browser with Segoe UI, and comes out
+different with another font.
 """
 from __future__ import annotations
 
@@ -24,6 +27,8 @@ FULL = 1012
 FULL_SIZES = "(min-width: 1060px) 1012px, calc(100vw - 48px)"
 PHONE = 324
 PHONE_SIZES = "(min-width: 1060px) 324px, calc(33vw - 30px)"
+
+WRITTEN: set[str] = set()  # the files this run put in docs/img; main() removes the others at the end
 
 PROJECTS = [
     dict(
@@ -127,12 +132,14 @@ def resized(name: str, width: int) -> tuple[str, int]:
     with Image.open(src) as im:
         if im.width <= width:
             shutil.copyfile(src, IMG / name)
+            WRITTEN.add(name)
             return name, im.width
         if im.mode == "P":  # a palette image would be resampled without a filter
             im = im.convert("RGBA")
         small = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
     out = f"{src.stem}-{width}{src.suffix}"
     small.save(IMG / out, optimize=True, **({"quality": 90} if src.suffix == ".jpg" else {}))
+    WRITTEN.add(out)
     return out, width
 
 
@@ -158,6 +165,7 @@ def project(p: dict) -> str:
     logo = ""
     if p["logo"]:
         shutil.copyfile(SHOTS / p["logo"], IMG / p["logo"])
+        WRITTEN.add(p["logo"])
         logo = f'<img src="img/{e(p["logo"])}" alt="" width="30" height="30">'
     points = "".join(f"<li>{e(x)}</li>" for x in p["points"])
     note = f'<p class="muted small">{e(p["note"])}</p>' if p["note"] else ""
@@ -210,12 +218,11 @@ p {{ font-size: 40px; color: {t["muted"]}; margin: 22px 0 0; }}
     )
     capture(page, IMG / "og.png", 1200, 630, scale=1)
     optimise(IMG / "og.png", rgb=True)
+    WRITTEN.add("og.png")
 
 
 def main() -> None:
     IMG.mkdir(parents=True, exist_ok=True)
-    for old in IMG.iterdir():  # every image is written again below, so none is left over from an older page
-        old.unlink()
     preview_image()
     page = (DESIGN / "site.template.html").read_text(encoding="utf-8")
     page = page.replace("<!--PROJECTS-->", "".join(project(p) for p in PROJECTS))
@@ -223,6 +230,10 @@ def main() -> None:
     page = re.sub(r"<!--ICON:(\w+)-->", lambda m: icon(m.group(1)), page)
     (DOCS / "index.html").write_text(page, encoding="utf-8", newline="\n")
     (DOCS / ".nojekyll").write_text("", encoding="utf-8")
+    # only now, with the page and every image written, remove what an older page left behind
+    for old in IMG.iterdir():
+        if old.is_file() and old.name not in WRITTEN:
+            old.unlink()
     total = sum(f.stat().st_size for f in DOCS.rglob("*") if f.is_file())
     print("docs/index.html", (DOCS / "index.html").stat().st_size // 1024, "KB; docs total", total // 1024, "KB")
 

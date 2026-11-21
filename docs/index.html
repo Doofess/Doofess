@@ -28,6 +28,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 var(--
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
+p a, li a { text-decoration: underline; text-underline-offset: 3px; }  /* a link in running text is not told apart by colour alone */
 a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
 /* 1012 px of content: a screenshot across the page is drawn one to one from its 1012 px copy */
 .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
