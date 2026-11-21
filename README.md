@@ -64,14 +64,14 @@ Built with Python, PowerShell and TypeScript. [Repository](https://github.com/Do
 
 <p>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=Doofess&background=0D1117&border=3D444D&stroke=3D444D&ring=4493F8&fire=4493F8&currStreakNum=F0F6FC&sideNums=F0F6FC&currStreakLabel=9198A1&sideLabels=9198A1&dates=9198A1&border_radius=6">
-    <source media="(prefers-color-scheme: light)" srcset="https://streak-stats.demolab.com?user=Doofess&background=FFFFFF&border=D1D9E0&stroke=D1D9E0&ring=0969DA&fire=0969DA&currStreakNum=1F2328&sideNums=1F2328&currStreakLabel=59636E&sideLabels=59636E&dates=59636E&border_radius=6">
-    <img src="https://streak-stats.demolab.com?user=Doofess&background=FFFFFF&border=D1D9E0&stroke=D1D9E0&ring=0969DA&fire=0969DA&currStreakNum=1F2328&sideNums=1F2328&currStreakLabel=59636E&sideLabels=59636E&dates=59636E&border_radius=6" width="53.5%" alt="Total contributions, current streak and longest streak">
+    <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=Doofess&background=0D1117&border=3D444D&stroke=3D444D&ring=4493F8&fire=4493F8&currStreakNum=F0F6FC&sideNums=F0F6FC&currStreakLabel=9198A1&sideLabels=9198A1&dates=9198A1&border_radius=6&disable_animations=true">
+    <source media="(prefers-color-scheme: light)" srcset="https://streak-stats.demolab.com?user=Doofess&background=FFFFFF&border=D1D9E0&stroke=D1D9E0&ring=0969DA&fire=0969DA&currStreakNum=1F2328&sideNums=1F2328&currStreakLabel=59636E&sideLabels=59636E&dates=59636E&border_radius=6&disable_animations=true">
+    <img src="https://streak-stats.demolab.com?user=Doofess&background=FFFFFF&border=D1D9E0&stroke=D1D9E0&ring=0969DA&fire=0969DA&currStreakNum=1F2328&sideNums=1F2328&currStreakLabel=59636E&sideLabels=59636E&dates=59636E&border_radius=6&disable_animations=true" width="53.5%" alt="Total contributions, current streak and longest streak">
   </picture>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=Doofess&layout=compact&langs_count=6&card_width=350&bg_color=0D1117&title_color=F0F6FC&text_color=9198A1&border_color=3D444D&border_radius=6&custom_title=Languages%20in%20public%20repos">
-    <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=Doofess&layout=compact&langs_count=6&card_width=350&bg_color=FFFFFF&title_color=1F2328&text_color=59636E&border_color=D1D9E0&border_radius=6&custom_title=Languages%20in%20public%20repos">
-    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Doofess&layout=compact&langs_count=6&card_width=350&bg_color=FFFFFF&title_color=1F2328&text_color=59636E&border_color=D1D9E0&border_radius=6&custom_title=Languages%20in%20public%20repos" width="44.5%" alt="Languages in my public repositories">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=Doofess&layout=compact&langs_count=6&card_width=350&bg_color=0D1117&title_color=F0F6FC&text_color=9198A1&border_color=3D444D&border_radius=6&custom_title=Languages%20in%20public%20repos&disable_animations=true">
+    <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=Doofess&layout=compact&langs_count=6&card_width=350&bg_color=FFFFFF&title_color=1F2328&text_color=59636E&border_color=D1D9E0&border_radius=6&custom_title=Languages%20in%20public%20repos&disable_animations=true">
+    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Doofess&layout=compact&langs_count=6&card_width=350&bg_color=FFFFFF&title_color=1F2328&text_color=59636E&border_color=D1D9E0&border_radius=6&custom_title=Languages%20in%20public%20repos&disable_animations=true" width="44.5%" alt="Languages in my public repositories">
   </picture>
 </p>
 
