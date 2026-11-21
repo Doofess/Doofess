@@ -5,6 +5,13 @@
 Writes assets/*.svg (banner, stack panel, buttons) and assets/*.png (project
 cards, drawn as HTML and captured with headless Chrome at 2x). Every image has a
 light and a dark version; the README picks one with <picture>.
+
+The cards are drawn with Segoe UI and Cascadia Mono, which Windows 11 ships. On a
+PC without them the browser falls back to other fonts and the PNGs come out
+different, so rebuild the cards on Windows.
+
+The numbers on the cards live in PROJECTS below; site.py reads the same list, and
+main() warns when README.md does not mention one of them.
 """
 from __future__ import annotations
 
@@ -28,7 +35,8 @@ TMP = DESIGN / ".tmp"
 
 def find_chrome() -> str:
     """Chrome or Edge: CHROME_PATH if set, then PATH, then the usual Windows install folders."""
-    candidates = [os.environ.get("CHROME_PATH"), shutil.which("chrome"), shutil.which("msedge")]
+    candidates = [os.environ.get("CHROME_PATH")]
+    candidates += [shutil.which(n) for n in ("chrome", "msedge", "google-chrome", "chromium", "chromium-browser")]
     for base in (os.environ.get("PROGRAMFILES"), os.environ.get("PROGRAMFILES(X86)"), os.environ.get("LOCALAPPDATA")):
         if base:
             candidates.append(os.path.join(base, "Google", "Chrome", "Application", "chrome.exe"))
@@ -310,8 +318,8 @@ html, body { width: %(w)dpx; height: %(h)dpx; background: transparent; overflow:
        box-shadow: 0 10px 30px %(shadow)s; }
 .win img { display: block; width: 100%%; height: 100%%; object-fit: cover; object-position: left top; }
 .main { inset: 0; }
-.top { left: 0; top: 0; width: 476px; height: 226px; }
-.strip { left: 0; bottom: 0; width: 476px; height: 39px; border-radius: 4px; }
+.top { left: 0; top: 0; width: 476px; height: 236px; }
+.strip { left: 0; bottom: 0; width: 476px; height: 30px; border-radius: 4px; }
 .gym .main { inset: 0 auto auto 0; width: 418px; height: 262px; }
 .phone { right: 0; bottom: 0; width: 112px; height: 249px; border-radius: 12px; border-width: 2px; }
 .fig { margin-top: 14px; display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 1.4px;
@@ -363,7 +371,7 @@ def card_html(p: dict, theme: str) -> str:
     <div class="fig mono"><span>FIG. {int(p['no']) + 1}</span><i></i><span>{p['fig']}</span></div>
   </div>
   <div class="right">
-    <div class="head mono"><span><b>{p['no']}</b> / 04</span><span>{p['status']}</span></div>
+    <div class="head mono"><span>SHEET <b>{int(p['no']) + 1:02d}</b></span><span>{p['status']}</span></div>
     <div class="title">{logo}<h1>{p['name']}</h1></div>
     <p class="tag">{p['tagline']}</p>
     <div class="metrics">{metrics}</div>
@@ -373,11 +381,13 @@ def card_html(p: dict, theme: str) -> str:
 
 
 def capture(html: Path, png: Path, w: int, h: int, scale: int = 2) -> None:
-    subprocess.run(
+    result = subprocess.run(
         [find_chrome(), "--headless=new", "--disable-gpu", "--hide-scrollbars", "--default-background-color=00000000",
          f"--force-device-scale-factor={scale}", f"--window-size={w},{h}", f"--screenshot={png}", html.as_uri()],
-        check=True, capture_output=True,
+        capture_output=True, text=True,
     )
+    if result.returncode or not png.is_file():
+        raise SystemExit(f"The browser could not capture {html.name}: {result.stderr.strip()}")
 
 
 def optimise(png: Path, rgb: bool = False) -> None:
@@ -390,8 +400,18 @@ def optimise(png: Path, rgb: bool = False) -> None:
 
 def prepare_shots() -> None:
     # The status bar is 2880 px wide and 94 px tall: keep its left part so the text stays readable.
+    # 1506 is in the gap after the context meter, so the crop ends between two elements.
     with Image.open(SHOTS / "claude-setup-statusbar.png") as bar:
-        bar.crop((0, 0, 1147, 94)).save(SHOTS / "claude-setup-statusbar-crop.png")
+        bar.crop((0, 0, 1506, 94)).save(SHOTS / "claude-setup-statusbar-crop.png")
+
+
+def check_readme() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    for p in PROJECTS:
+        for value, label in p["metrics"]:
+            number = value.replace("≈ ", "")
+            if number not in readme:
+                print(f"warning: README.md does not mention {number} ({p['name']}: {label})")
 
 
 def main() -> None:
@@ -412,6 +432,7 @@ def main() -> None:
             capture(html, png, CARD_W, CARD_H)
             optimise(png)
             print(png.name, png.stat().st_size // 1024, "KB")
+    check_readme()
 
 
 if __name__ == "__main__":

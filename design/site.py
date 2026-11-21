@@ -14,6 +14,10 @@ from pathlib import Path
 from PIL import Image
 
 from build import DESIGN, ROOT, SHOTS, STACK, THEMES, TMP, banner, capture, icon_path, optimise
+from build import PROJECTS as CARDS
+
+# The numbers are kept once, in build.py.
+METRICS = {c["id"]: c["metrics"] for c in CARDS}
 
 DOCS = ROOT / "docs"
 IMG = DOCS / "img"
@@ -30,8 +34,6 @@ PROJECTS = [
             "Decodes about 100 protocols in its own TypeScript dissectors, from Ethernet and TCP to QUIC, HTTP/3, SMB2 and Kerberos, and decrypts TLS 1.2, TLS 1.3 and QUIC from a browser's SSLKEYLOGFILE.",
             "74 decision records explain the design, each with what it cost.",
         ],
-        metrics=[("≈ 100", "protocols decoded"), ("≈ 85,000", "frames a second in replay"),
-                 ("74", "decision records"), ("365", "assertion scripts")],
         stack=["Electron", "React", "TypeScript", "Rust", "Npcap"],
         note=None,
         links=[("Repository", "https://github.com/Doofess/inwire", True),
@@ -52,8 +54,6 @@ PROJECTS = [
             "One contract for both clients: Zod schemas validate requests, type the desktop client and produce OpenAPI, which generates the Kotlin models.",
             "Every screen works in Hebrew and English, right to left, light and dark.",
         ],
-        metrics=[("9", "roles"), ("38", "permission grants"),
-                 ("≈ 4,740", "Vitest cases in CI"), ("12", "TypeScript projects")],
         stack=["TypeScript", "Kotlin", "Jetpack Compose", "PostgreSQL", "Electron", "React", "Hono"],
         note="Runs in staging only: nothing is in production and no real member uses it. The source is private; the repository documents the system. The screenshots use made-up data.",
         links=[("Architecture and screenshots", "https://github.com/Doofess/gymbro", True)],
@@ -74,8 +74,6 @@ PROJECTS = [
             "Every write to an agent's config is a diff preview with a snapshot and an undo.",
             "The localhost API follows a written threat model: random port, a 32-byte token per launch, Host and Origin checks.",
         ],
-        metrics=[("13.8 MB", "installer"), ("2,955", "Rust tests"),
-                 ("≈ 4,500", "Vitest cases"), ("188", "generated protocol types")],
         stack=["Tauri 2", "Rust", "React", "TypeScript", "xterm.js", "SQLite"],
         note=None,
         links=[("Repository", "https://github.com/Doofess/marshell", True),
@@ -96,13 +94,11 @@ PROJECTS = [
             "A hook written in Python refuses to merge a pull request until its latest commit has been reviewed.",
             "One installer makes every Windows PC the same: settings, hooks, skills, plugins and terminal colours.",
         ],
-        metrics=[("374", "Python tests"), ("91", "test cases for the session view"),
-                 ("553", "lines in the merge gate"), ("14", "unittest files")],
         stack=["Python", "PowerShell", "TypeScript"],
         note=None,
         links=[("Repository", "https://github.com/Doofess/claude-setup", True)],
         shots=[("claude-setup-session-cards.png", "The modified Claude Code session view, with prompts and agent runs as cards"),
-               ("claude-setup-statusbar-crop.png", "The left part of the status bar: repository, branch, pull request, model and effort",
+               ("claude-setup-statusbar-crop.png", "The left part of the status bar: repository, branch, pull request, model, effort and the context meter",
                 "claude-setup-statusbar.png")],
         phones=[],
         caption="Session view and status bar",
@@ -127,7 +123,7 @@ def project(p: dict) -> str:
     e = html.escape  # every string from PROJECTS is plain text and is escaped here
     logo = f'<img src="img/{e(p["logo"])}" alt="" width="40" height="40">' if p["logo"] else ""
     points = "".join(f"<li>{e(x)}</li>" for x in p["points"])
-    metrics = "".join(f"<div><strong>{e(v)}</strong><span>{e(label)}</span></div>" for v, label in p["metrics"])
+    metrics = "".join(f"<div><strong>{e(v)}</strong><span>{e(label)}</span></div>" for v, label in METRICS[p["id"]])
     chips = "".join(f"<li>{e(s)}</li>" for s in p["stack"])
     note = f'<p class="note">{e(p["note"])}</p>' if p["note"] else ""
     links = "".join(
@@ -163,7 +159,7 @@ def stack_html() -> str:
     out = ""
     for title, items in STACK:
         cells = "".join(f"<li>{icon(slug)}{names.get(name, name)}</li>" for slug, name in items)
-        out += f'      <div><p class="label" style="margin:0">{title.title().replace(" And ", " and ")}</p><ul>{cells}</ul></div>\n'
+        out += f'      <div><p class="label" style="margin:0">{title.capitalize()}</p><ul>{cells}</ul></div>\n'
     return out
 
 
