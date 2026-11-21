@@ -16,7 +16,7 @@ Full-stack developer and system designer in Israel, currently looking for opport
   <a href="https://x.com/Rotemgr"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/button-x-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/button-x-light.svg"><img src="assets/button-x-light.svg" height="32" alt="X"></picture></a>
 </p>
 
-These projects are built with AI coding agents (Claude Code). I make the design and UX/UI decisions, review the code and test by hand. Each README has the architecture, the decisions behind it and how it is tested.
+These projects are built with AI coding agents. I make the design and UX/UI decisions, review the code and test by hand. Each README has the architecture, the decisions behind it and how it is tested.
 
 ## Projects
 
@@ -46,12 +46,24 @@ Built with Tauri 2, Rust, React and TypeScript. [Repository](https://github.com/
 
 ### claude-setup
 
-My Claude Code configuration as code, with a hook that refuses to merge a pull request until its latest commit has been reviewed.
+My coding-agent setup, kept as code. It holds the skills, subagents and hooks described above, and one installer makes every Windows PC the same.
 
-<p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup.png" width="846" alt="claude-setup: the Claude Code session view, with the prompt in a card and an agent run summed up in one line"></a></p>
+<p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup.png" width="846" alt="claude-setup: the modified session view, with the prompt in a card and an agent run summed up in one line"></a></p>
 <p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup-bar.png" width="753" alt="claude-setup: the status bar, with repository, branch, pull request, model, effort and the context meter"></a></p>
 
 Built with Python, PowerShell and TypeScript. [Repository](https://github.com/Doofess/claude-setup)
+
+## How I work with agents
+
+**Plans and passes.** Each feature starts as a short spec and a step-by-step plan in .md files. A main session hands the steps to subagents and runs the tests itself after each one, because an agent's summary of its own work is not proof that the work is correct.
+
+**Review before merge.** A pull request is merged only after a code review of its latest commit, with every finding checked against the code. I wrote a skill and a hook for this, and the hook refuses the merge until that review is recorded.
+
+**Models, cache and context.** The model is matched to the task and usually kept for the whole session, since switching it throws away the prompt cache. Sessions tend to stay on one task, and the context is cleared before anything unrelated so that an old conversation does not pull the model off course.
+
+**Tools per project.** Plugins, MCP servers, language servers and skills are switched on only in the projects that use them, because many of them add to the context on every turn and cost tokens whether they are used or not.
+
+The full write-up, including the two subagents I wrote and why, is on the [portfolio page](https://doofess.github.io/Doofess/#work).
 
 ## What I build with
 
