@@ -13,7 +13,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from build import CHROME, DESIGN, ICONS, ROOT, SHOTS, STACK, THEMES, TMP, banner, capture, icon_path
+from build import DESIGN, ROOT, SHOTS, STACK, THEMES, TMP, banner, capture, icon_path, optimise
 
 DOCS = ROOT / "docs"
 IMG = DOCS / "img"
@@ -96,7 +96,7 @@ PROJECTS = [
             "A hook written in Python refuses to merge a pull request until its latest commit has been reviewed.",
             "One installer makes every Windows PC the same: settings, hooks, skills, plugins and terminal colours.",
         ],
-        metrics=[("374", "Python tests"), ("91", "test cases for the view mod"),
+        metrics=[("374", "Python tests"), ("91", "test cases for the session view"),
                  ("553", "lines in the merge gate"), ("14", "unittest files")],
         stack=["Python", "PowerShell", "TypeScript"],
         note=None,
@@ -117,19 +117,21 @@ def icon(slug: str) -> str:
 
 
 def shot(name: str, alt: str, full: str | None = None) -> str:
-    w, h = Image.open(IMG / name).size
-    return (f'<a class="shot" href="img/{full or name}"><img src="img/{name}" width="{w}" height="{h}" '
+    with Image.open(IMG / name) as im:
+        w, h = im.size
+    return (f'<a class="shot" href="img/{html.escape(full or name)}"><img src="img/{html.escape(name)}" width="{w}" height="{h}" '
             f'loading="lazy" alt="{html.escape(alt)}"></a>')
 
 
 def project(p: dict) -> str:
-    logo = f'<img src="img/{p["logo"]}" alt="" width="40" height="40">' if p["logo"] else ""
-    points = "".join(f"<li>{html.escape(x)}</li>" for x in p["points"])
-    metrics = "".join(f"<div><strong>{v}</strong><span>{label}</span></div>" for v, label in p["metrics"])
-    chips = "".join(f"<li>{s}</li>" for s in p["stack"])
-    note = f'<p class="note">{html.escape(p["note"])}</p>' if p["note"] else ""
+    e = html.escape  # every string from PROJECTS is plain text and is escaped here
+    logo = f'<img src="img/{e(p["logo"])}" alt="" width="40" height="40">' if p["logo"] else ""
+    points = "".join(f"<li>{e(x)}</li>" for x in p["points"])
+    metrics = "".join(f"<div><strong>{e(v)}</strong><span>{e(label)}</span></div>" for v, label in p["metrics"])
+    chips = "".join(f"<li>{e(s)}</li>" for s in p["stack"])
+    note = f'<p class="note">{e(p["note"])}</p>' if p["note"] else ""
     links = "".join(
-        f'<a class="btn{" primary" if primary else ""}" href="{url}" rel="noopener">{label}{ARROW}</a>'
+        f'<a class="btn{" primary" if primary else ""}" href="{e(url)}" rel="noopener">{e(label)}{ARROW}</a>'
         for label, url, primary in p["links"]
     )
     shots = "".join(shot(*x) for x in p["shots"])
@@ -137,15 +139,15 @@ def project(p: dict) -> str:
         shots += '<div class="phones">' + "".join(shot(n, a) for n, a in p["phones"]) + "</div>"
     return f'''
   <section class="sheet project" id="{p["id"]}" aria-labelledby="{p["id"]}-h">
-    <div class="sheet-head label"><span>Sheet <b>{p["sheet"]}</b> / Project</span><span>{p["status"]}</span></div>
+    <div class="sheet-head label"><span>Sheet <b>{p["sheet"]}</b> / Project</span><span>{e(p["status"])}</span></div>
     <div class="project-body">
       <div class="shots">
         {shots}
-        <p class="caption label"><span>Fig. {int(p["sheet"])}</span><i></i><span>{p["caption"]}</span></p>
+        <p class="caption label"><span>Fig. {int(p["sheet"])}</span><i></i><span>{e(p["caption"])}</span></p>
       </div>
       <div>
-        <div class="title-row">{logo}<h3 id="{p["id"]}-h">{p["name"]}</h3></div>
-        <p class="tagline">{p["tagline"]}</p>
+        <div class="title-row">{logo}<h3 id="{p["id"]}-h">{e(p["name"])}</h3></div>
+        <p class="tagline">{e(p["tagline"])}</p>
         <ul class="points">{points}</ul>
         <div class="metrics">{metrics}</div>
         <ul class="chips" aria-label="Built with">{chips}</ul>
@@ -172,7 +174,8 @@ def images() -> None:
             for name in (names[0], *names[2:]):
                 shutil.copyfile(SHOTS / name, IMG / name)
         for name, _ in p["phones"]:
-            Image.open(SHOTS / name).resize((540, 1200), Image.LANCZOS).save(IMG / name, optimize=True)
+            with Image.open(SHOTS / name) as im:  # 540 wide, height from the source's own ratio
+                im.resize((540, round(im.height * 540 / im.width)), Image.LANCZOS).save(IMG / name, optimize=True)
         if p["logo"]:
             shutil.copyfile(SHOTS / p["logo"], IMG / p["logo"])
     # link preview image: the dark banner on the page colour, 1200 x 630
@@ -184,7 +187,7 @@ def images() -> None:
         encoding="utf-8",
     )
     capture(page, IMG / "og.png", 1200, 630, scale=1)
-    Image.open(IMG / "og.png").convert("RGB").save(IMG / "og.png", optimize=True)
+    optimise(IMG / "og.png", rgb=True)
 
 
 def main() -> None:

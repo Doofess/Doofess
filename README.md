@@ -67,7 +67,7 @@ Built with Tauri 2, Rust, React and TypeScript. [Repository](https://github.com/
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/card-claude-setup-dark.png">
     <source media="(prefers-color-scheme: light)" srcset="assets/card-claude-setup-light.png">
-    <img src="assets/card-claude-setup-light.png" width="100%" alt="claude-setup, my Claude Code setup kept as code. The screenshots show the session view and the status bar. 374 Python tests, 91 test cases for the view mod, 553 lines in the merge gate, 14 unittest files.">
+    <img src="assets/card-claude-setup-light.png" width="100%" alt="claude-setup, my Claude Code setup kept as code. The screenshots show the session view and the status bar. 374 Python tests, 91 test cases for the session view, 553 lines in the merge gate, 14 unittest files.">
   </picture>
 </a>
 </p>

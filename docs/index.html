@@ -172,7 +172,7 @@ footer { padding: 28px 0 48px; text-align: center; }
 @media (max-width: 520px) {
   body { font-size: 16px; }
   .wrap { padding: 0 14px; }
-  .bar nav a:nth-child(n+3) { display: none; }
+  .bar nav a.wide { display: none; }
   .status { font-size: 11px; letter-spacing: .05em; padding: 8px 12px; }
   h3 { font-size: 28px; }
 }
@@ -185,9 +185,9 @@ footer { padding: 28px 0 48px; text-align: center; }
     <a class="brand" href="#top">Rotem Grinhut <em style="font-style:normal"><span>/</span> Portfolio</em></a>
     <nav aria-label="Sections">
       <a href="#projects">Projects</a>
+      <a href="#work" class="wide">How I work</a>
+      <a href="#stack" class="wide">Stack</a>
       <a href="#contact">Contact</a>
-      <a href="#work">How I work</a>
-      <a href="#stack">Stack</a>
     </nav>
   </div>
 </header>
@@ -299,7 +299,7 @@ footer { padding: 28px 0 48px; text-align: center; }
         <div class="title-row"><h3 id="claude-setup-h">claude-setup</h3></div>
         <p class="tagline">My Claude Code setup, kept as code</p>
         <ul class="points"><li>Work runs from .md plan files: a main Opus session plans, Sonnet workers write code, Haiku searches.</li><li>Plugins, MCP servers and skills are switched on per project, since each one costs tokens on every turn.</li><li>A status bar shows how full the context is and how much of the 5-hour and 7-day usage is left.</li><li>A hook written in Python refuses to merge a pull request until its latest commit has been reviewed.</li><li>One installer makes every Windows PC the same: settings, hooks, skills, plugins and terminal colours.</li></ul>
-        <div class="metrics"><div><strong>374</strong><span>Python tests</span></div><div><strong>91</strong><span>test cases for the view mod</span></div><div><strong>553</strong><span>lines in the merge gate</span></div><div><strong>14</strong><span>unittest files</span></div></div>
+        <div class="metrics"><div><strong>374</strong><span>Python tests</span></div><div><strong>91</strong><span>test cases for the session view</span></div><div><strong>553</strong><span>lines in the merge gate</span></div><div><strong>14</strong><span>unittest files</span></div></div>
         <ul class="chips" aria-label="Built with"><li>Python</li><li>PowerShell</li><li>TypeScript</li></ul>
         
         <div class="btns"><a class="btn primary" href="https://github.com/Doofess/claude-setup" rel="noopener">Repository<svg viewBox="0 0 16 16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M4 12 L12 4 M6 4 H12 V10"/></svg></a></div>

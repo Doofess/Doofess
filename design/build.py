@@ -9,7 +9,9 @@ light and a dark version; the README picks one with <picture>.
 from __future__ import annotations
 
 import base64
+import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -22,7 +24,20 @@ SHOTS = DESIGN / "shots"
 ICONS = DESIGN / "icons"
 ASSETS = ROOT / "assets"
 TMP = DESIGN / ".tmp"
-CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+
+
+def find_chrome() -> str:
+    """Chrome or Edge: CHROME_PATH if set, then PATH, then the usual Windows install folders."""
+    candidates = [os.environ.get("CHROME_PATH"), shutil.which("chrome"), shutil.which("msedge")]
+    for base in (os.environ.get("PROGRAMFILES"), os.environ.get("PROGRAMFILES(X86)"), os.environ.get("LOCALAPPDATA")):
+        if base:
+            candidates.append(os.path.join(base, "Google", "Chrome", "Application", "chrome.exe"))
+            candidates.append(os.path.join(base, "Microsoft", "Edge", "Application", "msedge.exe"))
+    for path in candidates:
+        if path and os.path.isfile(path):
+            return path
+    raise SystemExit("Chrome or Edge not found. Set CHROME_PATH to the browser's exe.")
+
 
 MONO = "ui-monospace, SFMono-Regular, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, 'Liberation Mono', monospace"
 SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
@@ -216,7 +231,9 @@ def button(t: dict, label: str, icon: str | None, primary: bool) -> str:
     if icon:
         body += f'<g transform="translate({x} 11.5) scale({15 / 24:.4f})"><path d="{icon_path(icon)}" fill="{fg}"/></g>'
         x += icon_w
-    body += f'<text x="{x}" y="23.5" style="font: 700 12.5px {MONO}; letter-spacing: 1.1px; fill: {fg}">{label}</text>'
+    # textLength pins the label's width, so a wider fallback font cannot push it into the arrow
+    body += (f'<text x="{x}" y="23.5" textLength="{text_w:.1f}" lengthAdjust="spacing" '
+             f'style="font: 700 12.5px {MONO}; letter-spacing: 1.1px; fill: {fg}">{label}</text>')
     ax = w - 24
     body += f'<path d="M{ax} 23 L{ax + 8} 15 M{ax + 2} 15 H{ax + 8} V21" fill="none" stroke="{fg}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="{label.title()}">
@@ -266,7 +283,7 @@ PROJECTS = [
         status="WINDOWS",
         fig="SESSION VIEW AND STATUS BAR",
         shots=[("claude-setup-session-cards.png", "top"), ("claude-setup-statusbar-crop.png", "strip")],
-        metrics=[("374", "Python tests"), ("91", "test cases for the view mod"),
+        metrics=[("374", "Python tests"), ("91", "test cases for the session view"),
                  ("553", "lines in the merge gate"), ("14", "unittest files")],
         stack=["Python", "PowerShell", "TypeScript"],
     ),
@@ -295,7 +312,7 @@ html, body { width: %(w)dpx; height: %(h)dpx; background: transparent; overflow:
 .main { inset: 0; }
 .top { left: 0; top: 0; width: 476px; height: 226px; }
 .strip { left: 0; bottom: 0; width: 476px; height: 39px; border-radius: 4px; }
-.gym .main { left: 0; top: 0; width: 418px; height: 262px; inset: auto; }
+.gym .main { inset: 0 auto auto 0; width: 418px; height: 262px; }
 .phone { right: 0; bottom: 0; width: 112px; height: 249px; border-radius: 12px; border-width: 2px; }
 .fig { margin-top: 14px; display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 1.4px;
        font-weight: 600; color: %(muted)s; width: 476px; }
@@ -357,16 +374,24 @@ def card_html(p: dict, theme: str) -> str:
 
 def capture(html: Path, png: Path, w: int, h: int, scale: int = 2) -> None:
     subprocess.run(
-        [CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--default-background-color=00000000",
+        [find_chrome(), "--headless=new", "--disable-gpu", "--hide-scrollbars", "--default-background-color=00000000",
          f"--force-device-scale-factor={scale}", f"--window-size={w},{h}", f"--screenshot={png}", html.as_uri()],
         check=True, capture_output=True,
     )
 
 
+def optimise(png: Path, rgb: bool = False) -> None:
+    """Rewrites a PNG smaller. The image is read fully and closed before the same path is written."""
+    with Image.open(png) as im:
+        im.load()
+        copy = im.convert("RGB") if rgb else im.copy()
+    copy.save(png, optimize=True)
+
+
 def prepare_shots() -> None:
     # The status bar is 2880 px wide and 94 px tall: keep its left part so the text stays readable.
-    bar = Image.open(SHOTS / "claude-setup-statusbar.png")
-    bar.crop((0, 0, 1147, 94)).save(SHOTS / "claude-setup-statusbar-crop.png")
+    with Image.open(SHOTS / "claude-setup-statusbar.png") as bar:
+        bar.crop((0, 0, 1147, 94)).save(SHOTS / "claude-setup-statusbar-crop.png")
 
 
 def main() -> None:
@@ -385,7 +410,7 @@ def main() -> None:
             html.write_text(card_html(p, theme), encoding="utf-8")
             png = ASSETS / f"card-{p['id']}-{theme}.png"
             capture(html, png, CARD_W, CARD_H)
-            Image.open(png).save(png, optimize=True)
+            optimise(png)
             print(png.name, png.stat().st_size // 1024, "KB")
 
 
