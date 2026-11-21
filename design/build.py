@@ -18,7 +18,6 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 from PIL import Image, ImageChops, ImageDraw
@@ -83,7 +82,8 @@ def header(t: dict) -> str:
 # Buttons
 # --------------------------------------------------------------------------
 # The label width is the label in Segoe UI Semibold at 14 px plus 6%. It is written down here, not measured,
-# so the files come out the same on every PC.
+# so the files come out the same on every PC. It only sizes the box: the label is drawn in the viewer's own
+# font, unstretched, and the 14 px of padding on each side takes up a wider or narrower one.
 BUTTONS = [
     # file name, label, label width, icon, filled
     ("portfolio", "Portfolio", 59, None, True),
@@ -107,10 +107,11 @@ def button(t: dict, label: str, tw: int, icon: str | None, filled: bool) -> str:
     mark = ""
     if icon:
         mark = f'<path transform="translate({pad} 8) scale({16 / 24:.4f})" fill="{t["muted"]}" d="{icon_path(icon)}"/>'
-    # the label has a fixed length, so it fits the box in any font
+    # without an icon the label is centred; with one it starts after the icon
+    at = f'x="{pad + 24}"' if icon else f'x="{w / 2}" text-anchor="middle"'
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="{label}">
 {box}{mark}
-<text x="{w - pad - tw}" y="21" textLength="{tw}" lengthAdjust="spacingAndGlyphs" font-family="{SANS}" font-size="14" font-weight="600" fill="{ink}">{label}</text>
+<text {at} y="21" font-family="{SANS}" font-size="14" font-weight="600" fill="{ink}">{label}</text>
 </svg>
 '''
 
@@ -204,8 +205,6 @@ def main() -> None:
         for slug, label, tw, icon, filled in BUTTONS:
             (ASSETS / f"button-{slug}-{theme}.svg").write_text(button(t, label, tw, icon, filled), encoding="utf-8", newline="\n")
     for name, scale, width, height, panels in README_SHOTS:
-        if len(sys.argv) > 1 and name not in sys.argv[1:]:
-            continue
         readme_shot(scale, width, height, panels).save(ASSETS / name, optimize=True)
         print(name, (ASSETS / name).stat().st_size // 1024, "KB")
 

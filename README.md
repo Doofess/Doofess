@@ -48,7 +48,7 @@ Built with Tauri 2, Rust, React and TypeScript. [Repository](https://github.com/
 
 My Claude Code configuration as code, with a hook that refuses to merge a pull request until its latest commit has been reviewed.
 
-<p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup.png" width="846" alt="claude-setup: the Claude Code session view, with the prompt and an agent run shown as cards"></a></p>
+<p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup.png" width="846" alt="claude-setup: the Claude Code session view, with the prompt in a card and an agent run summed up in one line"></a></p>
 <p><a href="https://github.com/Doofess/claude-setup"><img src="assets/shot-claude-setup-bar.png" width="753" alt="claude-setup: the status bar, with repository, branch, pull request, model, effort and the context meter"></a></p>
 
 Built with Python, PowerShell and TypeScript. [Repository](https://github.com/Doofess/claude-setup)

@@ -6,6 +6,9 @@ GitHub Pages serves docs/ at https://doofess.github.io/Doofess/.
 
 Run it on Windows 11: the link preview image is drawn by a headless browser with Segoe UI, and comes out
 different with another font.
+
+docs/img belongs to this script. Every file the page uses is written there on each run, and a file the run
+did not write is removed at the end, so keep nothing else in that folder.
 """
 from __future__ import annotations
 
@@ -108,9 +111,14 @@ PROJECTS = [
         links=[("Repository", "https://github.com/Doofess/claude-setup", True)],
         main=("claude-setup-session-cards.png", "The modified Claude Code session view, with prompts and agent runs as cards",
               "Session view"),
-        more=[("claude-setup-statusbar.png", "The status bar: repository, branch, pull request, model, effort, the context meter and the usage left",
-               "Status bar")],
+        more=[],
         phones=[],
+        # the bar is 2880 px wide and was captured at 2x: it is cut in two at 1506, a gap between two of its
+        # elements, and each half is shown at its real size
+        strips=("claude-setup-statusbar.png", 2, [
+            ((0, 1506), "The status bar, left half: repository, branch, pull request, model, effort and the context meter"),
+            ((1506, 2880), "The status bar, right half: the 5-hour and 7-day usage left, the cost and the time"),
+        ], "Status bar, in two halves"),
     ),
 ]
 
@@ -160,6 +168,24 @@ def shot(name: str, alt: str, caption: str | None = None, width: int = FULL, siz
     return out
 
 
+def strips(name: str, density: int, parts: list, caption: str) -> str:
+    """A wide, low screenshot cut into parts, one under the other. Each part is shown at the size it has on
+    screen (its pixels divided by the capture's density), so its text is not shrunk. All link to the whole."""
+    e = html.escape
+    src = SHOTS / name
+    shutil.copyfile(src, IMG / name)
+    WRITTEN.add(name)
+    out = ""
+    with Image.open(src) as im:
+        for i, ((left, right), alt) in enumerate(parts, 1):
+            part = f"{src.stem}-part{i}{src.suffix}"
+            im.crop((left, 0, right, im.height)).save(IMG / part, optimize=True)
+            WRITTEN.add(part)
+            out += (f'<a class="shot strip" href="img/{e(name)}"><img src="img/{e(part)}" width="{(right - left) // density}" '
+                    f'height="{im.height // density}" loading="lazy" alt="{e(alt)}"></a>')
+    return f'\n      <div class="more">{out}<p class="caption muted small">{e(caption)}</p></div>'
+
+
 def project(p: dict) -> str:
     e = html.escape  # every string from PROJECTS is plain text and is escaped here
     logo = ""
@@ -178,6 +204,8 @@ def project(p: dict) -> str:
         phones = "".join(shot(name, alt, None, PHONE, PHONE_SIZES, 2 * PHONE) for name, alt in p["phones"])
         more += (f'\n      <div class="more"><div class="phones">{phones}</div>'
                  f'<p class="caption muted small">{e(p["phones_caption"])}</p></div>')
+    if p.get("strips"):
+        more += strips(*p["strips"])
     return f'''
     <article class="project" id="{p["id"]}" aria-labelledby="{p["id"]}-h">
       <div class="title-row">{logo}<h3 id="{p["id"]}-h">{e(p["name"])}</h3><span class="status muted small">{e(p["status"])}</span></div>

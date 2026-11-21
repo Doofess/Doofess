@@ -45,7 +45,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
 h1 { font-size: clamp(38px, 6vw, 56px); line-height: 1.08; letter-spacing: -.025em; font-weight: 600; margin: 0; }
 h2 { font-size: 28px; line-height: 1.2; letter-spacing: -.015em; font-weight: 600; margin: 0 0 10px; }
 h3 { font-size: 24px; line-height: 1.2; letter-spacing: -.01em; font-weight: 600; margin: 0; }
-h4 { font-size: 15px; font-weight: 600; margin: 0 0 8px; }
+h4, h3.sub { font-size: 15px; line-height: 1.6; letter-spacing: 0; font-weight: 600; margin: 0 0 8px; }
 .muted { color: var(--muted); }
 .small { font-size: 15px; }
 
@@ -75,6 +75,8 @@ section, article { scroll-margin-top: 20px; }
 .tagline { color: var(--muted); font-size: 19px; margin: 6px 0 24px; }
 .shot { display: block; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); }
 .shot img { width: 100%; }
+.strip { width: fit-content; max-width: 100%; margin-bottom: 10px; border-radius: 6px; }
+.strip img { width: auto; }
 .caption { margin: 10px 0 0; }
 .project-text { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 48px; margin: 34px 0 36px; }
 .points { margin: 0; padding: 0 0 0 1.1em; }
@@ -144,7 +146,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
     <h2 id="work-h">How I work</h2>
     <div class="cols">
       <div>
-        <h4>My part</h4>
+        <h3 class="sub">My part</h3>
         <p>These projects are built with AI coding agents (Claude Code). In every one of them:</p>
         <ul class="points">
           <li>I make the design choices.</li>
@@ -154,7 +156,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
         </ul>
       </div>
       <div>
-        <h4>The workflow</h4>
+        <h3 class="sub">The workflow</h3>
         <ul class="points">
           <li>Work runs in planned passes. A main session writes the plan, worker agents carry out the steps, and each result is checked and tested before the next step.</li>
           <li>A pull request is merged only after a review. A hook refuses the merge until the latest commit has been reviewed.</li>
