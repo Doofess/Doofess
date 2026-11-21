@@ -91,6 +91,7 @@ section, article { scroll-margin-top: 20px; }
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 28px; }
 .cols p { margin: 0 0 12px; }
 .mypart { margin-top: 28px; }
+.mypart p { margin: 0 0 12px; }
 h3.topics-h { margin-top: 36px; }
 .topics { display: block; columns: 2; column-gap: 48px; margin-top: 0; }
 .topics p { margin: 0 0 18px; break-inside: avoid; }
@@ -170,7 +171,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
       <p><strong>Two subagents.</strong> I wrote two subagents, Explore and worker. Explore runs on the small model, can only read files, and answers with file paths and a sentence or two, so a search never fills the main session's context with whole files. worker runs on the mid-size model, carries out one brief, and reports back in a few lines: the files it changed, the test it ran and the result. This moves the reading and the routine edits to cheaper models and keeps the main session's context for planning and review.</p>
       <p><strong>The prompt cache.</strong> The model is usually chosen at the start of a session and kept for its whole length. Switching models halfway through throws away the prompt cache, so the full context has to be processed again, while changing the reasoning effort keeps the cache intact.</p>
       <p><strong>Keeping the context clean.</strong> Sessions tend to stay on a single task, and the context is cleared before moving on to something unrelated, because a model reading past an old conversation is more likely to drift. When a session goes down a wrong path, it is rewound to the point before the mistake, so the failed attempt does not stay in the context and steer what comes next. Command output is trimmed to the failures and the lines that matter, and a status bar shows how full the context is.</p>
-      <p><strong>Tools switched on per project.</strong> Plugins, MCP servers, language servers (LSP), hooks and skills are off by default and switched on only in the projects that use them. Many of them add their descriptions or output to the context on every turn, so a tool left on where it is not needed costs tokens for nothing. Inwire, for example, turns on the TypeScript and Rust language servers. Workflows that run many agents in parallel are switched on per session, and only when a task calls for one, because they spend tokens quickly.</p>
+      <p><strong>Tools switched on per project.</strong> Apart from a small core that every project needs, such as the review hook above, plugins, MCP servers, language servers (LSP), hooks and skills are off by default and switched on only in the projects that use them. Many of them add their descriptions or output to the context on every turn, so a tool left on where it is not needed costs tokens for nothing. Inwire, for example, turns on the TypeScript and Rust language servers. Workflows that run many agents in parallel are switched on per session, and only when a task calls for one, because they spend tokens quickly.</p>
     </div>
     <p class="muted small">The setup behind this is public: <a href="https://github.com/Doofess/claude-setup" rel="noopener">claude-setup</a>.</p>
   </section>

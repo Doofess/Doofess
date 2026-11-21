@@ -16,7 +16,7 @@ Full-stack developer and system designer in Israel, currently looking for opport
   <a href="https://x.com/Rotemgr"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/button-x-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/button-x-light.svg"><img src="assets/button-x-light.svg" height="32" alt="X"></picture></a>
 </p>
 
-These projects are built with AI coding agents. I make the design and UX/UI decisions, review the code and test by hand. Each README has the architecture, the decisions behind it and how it is tested.
+These projects are built with AI coding agents. I make the design and UX/UI decisions, read and review the code the agents write, and test by hand. Each README has the architecture, the decisions behind it and how it is tested.
 
 ## Projects
 
@@ -61,7 +61,7 @@ Built with Python, PowerShell and TypeScript. [Repository](https://github.com/Do
 
 **Models, cache and context.** The model is matched to the task and usually kept for the whole session, since switching it throws away the prompt cache. Sessions tend to stay on one task, and the context is cleared before anything unrelated so that an old conversation does not pull the model off course.
 
-**Tools per project.** Plugins, MCP servers, language servers and skills are switched on only in the projects that use them, because many of them add to the context on every turn and cost tokens whether they are used or not.
+**Tools per project.** Apart from a small core that every project needs, plugins, MCP servers, language servers and skills are switched on only in the projects that use them, because many of them add to the context on every turn and cost tokens whether they are used or not.
 
 The full write-up, including the two subagents I wrote and why, is on the [portfolio page](https://doofess.github.io/Doofess/#work).
 
