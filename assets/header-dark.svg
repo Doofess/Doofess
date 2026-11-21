@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 846 112" width="846" height="112" role="img" aria-label="Rotem Grinhut. Full-stack developer and system designer. Currently looking for opportunities. Israel. Hebrew and English.">
+<style>
+  text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; }
+  .name { font-size: 40px; font-weight: 600; letter-spacing: -0.8px; fill: #f0f6fc; }
+  .role { font-size: 18px; fill: #9198a1; }
+  .meta { font-size: 14px; fill: #9198a1; }
+  .open { font-weight: 600; fill: #f0f6fc; }
+</style>
+<text x="0" y="42" class="name">Rotem Grinhut</text>
+<text x="1" y="72" class="role">Full-stack developer and system designer</text>
+<circle cx="6" cy="97" r="4" fill="#4493f8"/>
+<text x="18" y="102" class="meta"><tspan class="open">Currently looking for opportunities</tspan><tspan dx="12">Israel</tspan><tspan dx="12">Hebrew and English</tspan></text>
+</svg>

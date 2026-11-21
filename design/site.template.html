@@ -12,178 +12,106 @@
 <meta property="og:image" content="https://doofess.github.io/Doofess/img/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b1a30'/%3E%3Cpath d='M7 9h8v6H7zM17 17h8v6h-8z' fill='none' stroke='%238fbaff' stroke-width='2'/%3E%3Cpath d='M15 12h6v5' fill='none' stroke='%23ffb454' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f2328'/%3E%3Ctext x='16' y='23' font-family='Segoe UI,Helvetica,Arial,sans-serif' font-size='19' font-weight='700' text-anchor='middle' fill='white'%3ER%3C/text%3E%3C/svg%3E">
 <style>
 :root {
   color-scheme: light dark;
-  --page: #e9eff8; --bg: #f6f9fd; --bg2: #eaf1fb; --line: #b5c8e6; --ink: #1f4e9c; --text: #0c2340;
-  --muted: #4c6183; --accent: #b8430b; --chip: #e6eefa; --on-ink: #f6f9fd;
-  --grid: rgba(31, 78, 156, .07); --grid2: rgba(31, 78, 156, .12); --shadow: rgba(12, 35, 64, .16);
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --line: #d1d9e0; --accent: #0969da; --button: #0969da;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
-    --page: #071223; --bg: #0b1a30; --bg2: #0f2342; --line: #2c4f82; --ink: #8fbaff; --text: #eaf2ff;
-    --muted: #9fb6d8; --accent: #ffb454; --chip: #112a4d; --on-ink: #0b1a30;
-    --grid: rgba(126, 170, 255, .06); --grid2: rgba(126, 170, 255, .11); --shadow: rgba(0, 0, 0, .45);
-  }
+  :root { --bg: #0d1117; --fg: #f0f6fc; --muted: #9198a1; --line: #3d444d; --accent: #4493f8; --button: #1f6feb; }
 }
-*, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 72px; }
-body {
-  margin: 0; color: var(--text); font: 17px/1.6 var(--sans);
-  background-color: var(--page);
-  background-image:
-    linear-gradient(var(--grid2) 1px, transparent 1px), linear-gradient(90deg, var(--grid2) 1px, transparent 1px),
-    linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-}
-a { color: var(--ink); text-underline-offset: 3px; }
-a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 var(--sans); -webkit-text-size-adjust: 100%; }
 img { max-width: 100%; height: auto; display: block; }
-.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-.label { font: 600 12px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+/* 1012 px of content: a screenshot across the page is drawn one to one from its 1012 px copy */
+.wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
 .skip { position: absolute; left: -999px; }
-.skip:focus { left: 16px; top: 16px; z-index: 10; background: var(--bg); padding: 8px 12px; }
+.skip:focus { left: 12px; top: 12px; background: var(--bg); padding: 8px 12px; z-index: 3; }
 
-/* top bar */
-.bar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--page) 88%, transparent);
-       backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
-.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; }
-.bar nav { display: flex; gap: 4px; flex-wrap: wrap; }
-.bar nav a { font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
-             color: var(--muted); padding: 8px 10px; border-radius: 4px; }
-.bar nav a:hover { color: var(--ink); background: var(--chip); }
-.brand { font: 700 13px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--text); text-decoration: none; }
-.brand span { color: var(--accent); }
+.top { border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; }
+.brand { font-weight: 600; color: var(--fg); }
+.top nav { display: flex; gap: 22px; font-size: 15px; }
+.top nav a { color: var(--muted); }
+.top nav a:hover { color: var(--fg); text-decoration: none; }
 
-/* sheets */
-.sheet { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 50px -30px var(--shadow); }
-section { margin: 40px 0; }
-.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap;
-              padding: 14px 24px; border-bottom: 1px solid var(--line); }
-.sheet-head b { color: var(--accent); font-weight: 700; }
+h1 { font-size: clamp(38px, 6vw, 56px); line-height: 1.08; letter-spacing: -.025em; font-weight: 600; margin: 0; }
+h2 { font-size: 28px; line-height: 1.2; letter-spacing: -.015em; font-weight: 600; margin: 0 0 10px; }
+h3 { font-size: 24px; line-height: 1.2; letter-spacing: -.01em; font-weight: 600; margin: 0; }
+h4 { font-size: 15px; font-weight: 600; margin: 0 0 8px; }
+.muted { color: var(--muted); }
+.small { font-size: 15px; }
 
-/* hero */
-.hero { margin-top: 32px; }
-.hero-body { display: grid; grid-template-columns: 1.15fr 1fr; gap: 32px; padding: 40px 32px 36px; align-items: center; }
-h1 { font-size: clamp(42px, 6.4vw, 76px); line-height: 1.02; letter-spacing: -.02em; margin: 0 0 14px; }
-.role { font: 600 clamp(13px, 1.5vw, 16px) var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink); margin: 0 0 22px; }
-.status { display: inline-flex; align-items: center; gap: 12px; padding: 9px 18px 9px 14px; border: 1.5px solid var(--accent);
-          border-radius: 999px; background: var(--bg2); color: var(--accent); font: 700 12.5px var(--mono); letter-spacing: .09em; text-transform: uppercase; }
-.dot { position: relative; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex: none; }
-.dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--accent); animation: pulse 2.4s ease-out infinite; }
-.lede { font-size: 19px; line-height: 1.55; margin: 24px 0 26px; max-width: 34em; }
-.btns { display: flex; flex-wrap: wrap; gap: 10px; }
-.btn { display: inline-flex; align-items: center; gap: 9px; padding: 10px 16px; border: 1.5px solid var(--ink); border-radius: 7px;
-       font: 700 12.5px var(--mono); letter-spacing: .09em; text-transform: uppercase; text-decoration: none; color: var(--ink); background: var(--bg); }
-.btn:hover { background: var(--chip); }
-.btn.primary { background: var(--ink); color: var(--on-ink); }
-.btn.primary:hover { filter: brightness(1.08); background: var(--ink); }
-.btn svg { width: 15px; height: 15px; fill: currentColor; }
-.fig svg { width: 100%; height: auto; display: block; }
-.fig .box { fill: var(--bg2); stroke: var(--ink); stroke-width: 1.2; }
-.fig .rule { stroke: var(--line); }
-.fig .cap { font: 600 10.5px var(--mono); letter-spacing: 1.4px; fill: var(--muted); }
-.fig .node { font: 12.5px var(--mono); fill: var(--text); }
-.fig .flow { stroke: var(--ink); stroke-width: 1.4; stroke-dasharray: 4 4; animation: flow 1s linear infinite; }
-.fig .arrow { stroke: var(--ink); stroke-width: 1.4; fill: none; }
-.fig .dim { stroke: var(--muted); }
-.fig .mask { fill: var(--bg); }
-.block { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); margin: 0; }
-.block div { padding: 14px 24px 16px; border-left: 1px solid var(--line); }
-.block div:first-child { border-left: 0; }
-.block dt { font: 600 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.block dd { margin: 4px 0 0; font-weight: 600; }
+.intro { padding: 72px 0 64px; }
+.lede { font-size: 21px; line-height: 1.5; color: var(--muted); max-width: 34em; margin: 18px 0 0; }
+.open { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; margin: 22px 0 0; }
+.open::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+.btns { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 26px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; line-height: 20px;
+       padding: 7px 14px; border: 1px solid var(--line); border-radius: 6px; color: var(--fg); }
+.btn:hover { text-decoration: none; border-color: var(--muted); }
+.btn svg { width: 16px; height: 16px; fill: var(--muted); flex: none; }
+.btn.primary { background: var(--button); border-color: var(--button); color: #fff; }
+.btn.primary svg { fill: #fff; }
+.btn.primary:hover { filter: brightness(1.08); }
 
-/* section titles */
-.section-title { display: flex; align-items: center; gap: 16px; margin: 56px 0 20px; }
-.section-title h2 { font-size: 30px; line-height: 1.15; letter-spacing: -.01em; margin: 0; }
-.section-title i { flex: 1; height: 1px; background: var(--line); }
-.intro { max-width: 46em; color: var(--muted); margin: -6px 0 24px; }
+section, article { scroll-margin-top: 20px; }
+.section { border-top: 1px solid var(--line); padding: 56px 0; }
+.section > .muted { margin: 0 0 8px; max-width: 46em; }
 
 /* projects */
-.project { margin: 0 0 28px; }
-.project-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; padding: 28px 28px 30px; }
-.title-row { display: flex; align-items: center; gap: 14px; }
-.title-row img { width: 40px; height: 40px; flex: none; }
-h3 { font-size: 34px; line-height: 1.1; letter-spacing: -.015em; margin: 0; }
-.tagline { color: var(--muted); font-size: 18px; margin: 8px 0 18px; }
-.points { margin: 0; padding: 0; list-style: none; }
-.points li { position: relative; padding: 0 0 12px 22px; font-size: 16px; line-height: 1.55; }
-.points li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 9px; height: 1.5px; background: var(--ink); }
-.metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 18px; margin: 10px 0 20px; }
-.metrics div { border-left: 2px solid var(--ink); padding-left: 12px; }
-.metrics strong { display: block; font: 600 22px/1.2 var(--mono); }
-.metrics span { display: block; font-size: 13.5px; line-height: 1.35; color: var(--muted); }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 20px; padding: 0; list-style: none; }
-.chips li { font: 600 12px var(--mono); padding: 4px 9px; border: 1px solid var(--line); border-radius: 4px; background: var(--chip); color: var(--ink); }
-.note { font-size: 14.5px; color: var(--muted); margin: 0 0 18px; }
-.shots { display: grid; gap: 14px; align-content: start; }
-.shot { display: block; border: 1px solid var(--ink); border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 14px 34px -18px var(--shadow); }
+.project { padding: 44px 0 8px; }
+.project + .project { border-top: 1px solid var(--line); margin-top: 44px; }
+.title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.title-row img { width: 30px; height: 30px; flex: none; }
+.title-row .status { margin-left: auto; }
+.tagline { color: var(--muted); font-size: 19px; margin: 6px 0 24px; }
+.shot { display: block; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); }
 .shot img { width: 100%; }
-.phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.phones .shot { border-radius: 14px; border-width: 2px; }
-.caption { display: flex; align-items: center; gap: 10px; margin-top: 2px; }
-.caption i { flex: 1; min-width: 12px; height: 1px; background: var(--muted); opacity: .5; }
-.caption span:first-child { white-space: nowrap; }
+.caption { margin: 10px 0 0; }
+.project-text { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 48px; margin: 34px 0 36px; }
+.points { margin: 0; padding: 0 0 0 1.1em; }
+.points li { padding: 0 0 10px 4px; }
+.points li::marker { color: var(--muted); }
+.facts p { margin: 0 0 20px; }
+.facts .btns { margin-top: 0; }
+.more { margin: 0 0 36px; }
+.phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.phones .shot { border-radius: 14px; }
 
-/* work + stack */
-.cols { display: grid; grid-template-columns: 1fr 1fr; }
-.cols > div { padding: 26px 28px 22px; }
-.cols > div + div { border-left: 1px solid var(--line); }
-.cols h3 { font-size: 20px; margin: 0 0 14px; letter-spacing: 0; }
-.stack { display: grid; grid-template-columns: 1fr 1fr; }
-.stack > div { padding: 22px 28px 24px; border-top: 1px solid var(--line); }
-.stack > div:nth-child(-n+2) { border-top: 0; }
-.stack > div:nth-child(even) { border-left: 1px solid var(--line); }
-.stack ul { display: flex; flex-wrap: wrap; gap: 18px 8px; margin: 16px 0 0; padding: 0; list-style: none; }
-.stack li { width: 84px; text-align: center; font: 12px var(--mono); }
-.stack svg { width: 30px; height: 30px; fill: var(--ink); display: block; margin: 0 auto 8px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 28px; }
+.cols p { margin: 0 0 12px; }
+.stack { margin: 24px 0 0; display: grid; grid-template-columns: 220px 1fr; gap: 12px 24px; }
+.stack dt { color: var(--muted); }
+.stack dd { margin: 0; }
 
-/* contact */
-.contact { padding: 34px 28px 36px; text-align: center; }
-.contact h2 { font-size: 30px; margin: 0 0 8px; }
-.contact p { color: var(--muted); margin: 0 auto 22px; max-width: 34em; }
-.contact .status { color: var(--accent); max-width: none; }
-.contact .btns { justify-content: center; }
-footer { padding: 28px 0 48px; text-align: center; }
+footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
 
-@keyframes flow { to { stroke-dashoffset: -8; } }
-@keyframes pulse { 0% { transform: scale(1); opacity: .9; } 70%, 100% { transform: scale(2.6); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .fig .flow, .dot::after { animation: none; }
-  .dot::after { opacity: 0; }
-}
-@media (max-width: 860px) {
-  .hero-body, .project-body, .cols, .stack { grid-template-columns: 1fr; }
-  .hero-body { padding: 28px 22px; }
-  .project-body { padding: 22px; gap: 24px; }
-  .block { grid-template-columns: 1fr 1fr; }
-  .block div:nth-child(3) { border-left: 0; }
-  .block div:nth-child(n+3) { border-top: 1px solid var(--line); }
-  .cols > div + div, .stack > div:nth-child(even) { border-left: 0; }
-  .cols > div + div { border-top: 1px solid var(--line); }
-  .stack > div:nth-child(2) { border-top: 1px solid var(--line); }
-  .bar nav a { padding: 8px 6px; }
-  .brand em { display: none; }
-}
-@media (max-width: 520px) {
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (max-width: 760px) {
   body { font-size: 16px; }
-  .wrap { padding: 0 14px; }
-  .bar nav a.wide { display: none; }
-  .status { font-size: 11px; letter-spacing: .05em; padding: 8px 12px; }
-  h3 { font-size: 28px; }
+  .intro { padding: 48px 0 44px; }
+  .project-text, .cols { grid-template-columns: 1fr; gap: 26px; }
+  .stack { grid-template-columns: 1fr; gap: 2px; }
+  .stack dd { margin-bottom: 14px; }
+  .title-row .status { margin-left: 0; flex-basis: 100%; }
+  .phones { gap: 10px; }
+  .top nav { gap: 14px; }
+  .top nav .wide { display: none; }
 }
 </style>
 </head>
 <body>
 <a class="skip" href="#projects">Skip to projects</a>
-<header class="bar">
+<header class="top">
   <div class="wrap">
-    <a class="brand" href="#top">Rotem Grinhut <em style="font-style:normal"><span>/</span> Portfolio</em></a>
+    <a class="brand" href="#top">Rotem Grinhut</a>
     <nav aria-label="Sections">
       <a href="#projects">Projects</a>
       <a href="#work" class="wide">How I work</a>
@@ -194,54 +122,29 @@ footer { padding: 28px 0 48px; text-align: center; }
 </header>
 
 <main class="wrap" id="top">
-  <section class="sheet hero" aria-labelledby="name">
-    <div class="sheet-head label"><span>Sheet <b>01</b> / Profile</span><span>github.com/Doofess</span></div>
-    <div class="hero-body">
-      <div>
-        <h1 id="name">Rotem Grinhut</h1>
-        <p class="role">Full-stack developer / System designer</p>
-        <p class="status"><span class="dot" aria-hidden="true"></span>Currently looking for opportunities</p>
-        <p class="lede">Full-stack developer and system designer in Israel. I build desktop and web apps with TypeScript, React and Rust.</p>
-        <div class="btns">
-          <a class="btn primary" href="https://www.linkedin.com/in/rotem-grinhut-979547262/" rel="noopener"><!--ICON:linkedin-->LinkedIn</a>
-          <a class="btn" href="https://github.com/Doofess" rel="noopener"><!--ICON:github-->GitHub</a>
-          <a class="btn" href="https://x.com/Rotemgr" rel="noopener"><!--ICON:x-->X</a>
-        </div>
-      </div>
-      <figure class="fig" style="margin:0">
-        <svg viewBox="0 0 400 150" role="img" aria-labelledby="figt">
-          <title id="figt">Figure 1, what I build. Interface: React, TypeScript, Kotlin. Services: TypeScript APIs, Rust services. Data: PostgreSQL, SQLite.</title>
-          <rect class="box" x="1" y="8" width="118" height="92" rx="4"/><text class="cap" x="13" y="29">INTERFACE</text><line class="rule" x1="1" y1="38" x2="119" y2="38"/>
-          <text class="node" x="13" y="58">React</text><text class="node" x="13" y="75">TypeScript</text><text class="node" x="13" y="92">Kotlin</text>
-          <rect class="box" x="143" y="8" width="132" height="92" rx="4"/><text class="cap" x="155" y="29">SERVICES</text><line class="rule" x1="143" y1="38" x2="275" y2="38"/>
-          <text class="node" x="155" y="58">TypeScript APIs</text><text class="node" x="155" y="75">Rust services</text>
-          <rect class="box" x="299" y="8" width="100" height="92" rx="4"/><text class="cap" x="311" y="29">DATA</text><line class="rule" x1="299" y1="38" x2="399" y2="38"/>
-          <text class="node" x="311" y="58">PostgreSQL</text><text class="node" x="311" y="75">SQLite</text>
-          <line class="flow" x1="119" y1="54" x2="143" y2="54"/><path class="arrow" d="M138 50 L143 54 L138 58"/>
-          <line class="flow" x1="275" y1="54" x2="299" y2="54"/><path class="arrow" d="M294 50 L299 54 L294 58"/>
-          <line class="dim" x1="1" y1="128" x2="399" y2="128"/><line class="dim" x1="1" y1="122" x2="1" y2="134"/><line class="dim" x1="399" y1="122" x2="399" y2="134"/>
-          <rect class="mask" x="110" y="119" width="180" height="18"/><text class="cap" x="200" y="132" text-anchor="middle">FIG. 1  WHAT I BUILD</text>
-        </svg>
-      </figure>
+  <section class="intro" aria-labelledby="name">
+    <h1 id="name">Rotem Grinhut</h1>
+    <p class="lede">Full-stack developer and system designer in Israel. I build desktop and web apps with TypeScript, React and Rust.</p>
+    <p class="open">Currently looking for opportunities</p>
+    <div class="btns">
+      <a class="btn primary" href="https://www.linkedin.com/in/rotem-grinhut-979547262/" rel="noopener"><!--ICON:linkedin-->LinkedIn</a>
+      <a class="btn" href="https://github.com/Doofess" rel="noopener"><!--ICON:github-->GitHub</a>
+      <a class="btn" href="https://x.com/Rotemgr" rel="noopener"><!--ICON:x-->X</a>
     </div>
-    <dl class="block">
-      <div><dt>Based in</dt><dd>Israel</dd></div>
-      <div><dt>Languages</dt><dd>Hebrew, English</dd></div>
-      <div><dt>Builds</dt><dd>Desktop and web apps</dd></div>
-      <div><dt>With</dt><dd>TypeScript, React, Rust</dd></div>
-    </dl>
   </section>
 
-  <div class="section-title" id="projects"><h2>Projects</h2><i></i><span class="label">Sheets 02 to 05</span></div>
-  <p class="intro">Each repository's README has the architecture, the decisions behind it and how it is tested.</p>
+  <section class="section" id="projects" aria-labelledby="projects-h">
+    <h2 id="projects-h">Projects</h2>
+    <p class="muted">Each repository's README has the architecture, the decisions behind it and how it is tested.</p>
 <!--PROJECTS-->
+  </section>
 
-  <div class="section-title" id="work"><h2>How I work</h2><i></i><span class="label">Sheet 06</span></div>
-  <section class="sheet" aria-label="How I work" style="margin-top:0">
+  <section class="section" id="work" aria-labelledby="work-h">
+    <h2 id="work-h">How I work</h2>
     <div class="cols">
       <div>
-        <p class="label">My part</p>
-        <p style="margin:10px 0 16px">These projects are built with AI coding agents (Claude Code). In every one of them:</p>
+        <h4>My part</h4>
+        <p>These projects are built with AI coding agents (Claude Code). In every one of them:</p>
         <ul class="points">
           <li>I make the design choices.</li>
           <li>I make all the UX/UI decisions.</li>
@@ -250,29 +153,29 @@ footer { padding: 28px 0 48px; text-align: center; }
         </ul>
       </div>
       <div>
-        <p class="label">The workflow</p>
-        <ul class="points" style="margin-top:14px">
+        <h4>The workflow</h4>
+        <ul class="points">
           <li>Work runs in planned passes. A main session writes the plan, worker agents carry out the steps, and each result is checked and tested before the next step.</li>
           <li>A pull request is merged only after a review. A hook refuses the merge until the latest commit has been reviewed.</li>
           <li>Token use is kept low. The model is chosen per task and tools are switched on per project.</li>
           <li>Sessions are run with the context window, turns and the prompt cache in mind.</li>
         </ul>
-        <p class="note" style="margin:6px 0 0">The setup behind this is public: <a href="https://github.com/Doofess/claude-setup" rel="noopener">claude-setup</a>.</p>
+        <p class="muted small">The setup behind this is public: <a href="https://github.com/Doofess/claude-setup" rel="noopener">claude-setup</a>.</p>
       </div>
     </div>
   </section>
 
-  <div class="section-title" id="stack"><h2>What I build with</h2><i></i><span class="label">Sheet 07</span></div>
-  <section class="sheet" aria-label="What I build with" style="margin-top:0">
-    <div class="stack">
+  <section class="section" id="stack" aria-labelledby="stack-h">
+    <h2 id="stack-h">What I build with</h2>
+    <dl class="stack">
 <!--STACK-->
-    </div>
+    </dl>
   </section>
 
-  <section class="sheet contact" id="contact" aria-labelledby="contact-h">
-    <p class="status" style="margin:0 0 18px"><span class="dot" aria-hidden="true"></span>Currently looking for opportunities</p>
+  <section class="section" id="contact" aria-labelledby="contact-h">
     <h2 id="contact-h">Contact</h2>
-    <p>The quickest way to reach me is LinkedIn. Hebrew and English.</p>
+    <p class="muted">The quickest way to reach me is LinkedIn. Hebrew and English.</p>
+    <p class="open">Currently looking for opportunities</p>
     <div class="btns">
       <a class="btn primary" href="https://www.linkedin.com/in/rotem-grinhut-979547262/" rel="noopener"><!--ICON:linkedin-->LinkedIn</a>
       <a class="btn" href="https://github.com/Doofess" rel="noopener"><!--ICON:github-->GitHub</a>
@@ -280,6 +183,6 @@ footer { padding: 28px 0 48px; text-align: center; }
     </div>
   </section>
 </main>
-<footer class="wrap label">Rotem Grinhut, 2026</footer>
+<footer><div class="wrap muted small">Rotem Grinhut, 2026</div></footer>
 </body>
 </html>
