@@ -97,10 +97,10 @@ PROJECTS = [
     ),
     dict(
         id="claude-setup", name="claude-setup", logo=None,
-        tagline="My Claude Code setup, kept as code",
+        tagline="My coding-agent setup, kept as code",
         status="Windows",
         points=[
-            "Work runs from .md plan files: a main Opus session plans, Sonnet workers write code, Haiku searches.",
+            "Work runs from .md plan files, with a large model planning, mid-size workers writing the code and a small model handling searches.",
             "Plugins, MCP servers and skills are switched on per project, since each one costs tokens on every turn.",
             "A status bar shows how full the context is and how much of the 5-hour and 7-day usage is left.",
             "A hook written in Python refuses to merge a pull request until its latest commit has been reviewed.",
@@ -109,7 +109,7 @@ PROJECTS = [
         stack=["Python", "PowerShell", "TypeScript"],
         note=None,
         links=[("Repository", "https://github.com/Doofess/claude-setup", True)],
-        main=("claude-setup-session-cards.png", "The modified Claude Code session view, with prompts and agent runs as cards",
+        main=("claude-setup-session-cards.png", "The coding agent's session view, modified to show prompts and agent runs as cards",
               "Session view"),
         more=[],
         phones=[],

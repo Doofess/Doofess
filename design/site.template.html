@@ -90,6 +90,11 @@ section, article { scroll-margin-top: 20px; }
 
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 28px; }
 .cols p { margin: 0 0 12px; }
+.mypart { margin-top: 28px; }
+.mypart p { margin: 0 0 12px; }
+h3.topics-h { margin-top: 36px; }
+.topics { display: block; columns: 2; column-gap: 48px; margin-top: 0; }
+.topics p { margin: 0 0 18px; break-inside: avoid; }
 .stack { margin: 24px 0 0; display: grid; grid-template-columns: 220px 1fr; gap: 12px 24px; }
 .stack dt { color: var(--muted); }
 .stack dd { margin: 0; }
@@ -101,6 +106,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
   body { font-size: 16px; }
   .intro { padding: 48px 0 44px; }
   .project-text, .cols { grid-template-columns: 1fr; gap: 26px; }
+  .topics { columns: 1; }
   .stack { grid-template-columns: 1fr; gap: 2px; }
   .stack dd { margin-bottom: 14px; }
   .title-row .status { margin-left: 0; flex-basis: 100%; }
@@ -144,10 +150,10 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
 
   <section class="section" id="work" aria-labelledby="work-h">
     <h2 id="work-h">How I work</h2>
-    <div class="cols">
+    <div class="mypart">
       <div>
         <h3 class="sub">My part</h3>
-        <p>These projects are built with AI coding agents (Claude Code). In every one of them:</p>
+        <p>These projects are built with AI coding agents. In every one of them:</p>
         <ul class="points">
           <li>I make the design choices.</li>
           <li>I make all the UX/UI decisions.</li>
@@ -155,17 +161,19 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; }
           <li>I test the apps by hand.</li>
         </ul>
       </div>
-      <div>
-        <h3 class="sub">The workflow</h3>
-        <ul class="points">
-          <li>Work runs in planned passes. A main session writes the plan, worker agents carry out the steps, and each result is checked and tested before the next step.</li>
-          <li>A pull request is merged only after a review. A hook refuses the merge until the latest commit has been reviewed.</li>
-          <li>Token use is kept low. The model is chosen per task and tools are switched on per project.</li>
-          <li>Sessions are run with the context window, turns and the prompt cache in mind.</li>
-        </ul>
-        <p class="muted small">The setup behind this is public: <a href="https://github.com/Doofess/claude-setup" rel="noopener">claude-setup</a>.</p>
-      </div>
     </div>
+    <h3 class="sub topics-h">The workflow</h3>
+    <div class="cols topics">
+      <p><strong>Planning in .md files.</strong> Each feature starts as a short spec and a step-by-step plan, written as .md files in the repository. A session usually reads only the section it is working on, found by its heading, which leaves more of the context window for the code itself. Marshell's repository has more than 80 of these plans.</p>
+      <p><strong>Work in checked passes.</strong> A main session holds the plan, and steps that touch more than a couple of files are usually handed to a subagent with a short brief. When the subagent reports back, the main session reads the report and runs the tests itself before the next step starts, because an agent's summary of its own work is not proof that the work is correct.</p>
+      <p><strong>Review before every merge.</strong> A pull request is merged only after a code review of the exact commit that is about to merge. Every finding is checked against the code and ends either fixed or left unchanged with the reason found in the code. I wrote the pre-merge-review skill for this, along with a hook that refuses the merge until that review is recorded for the pull request's latest commit. The hook is there because an agent describes broken code with the same confidence as working code, so the review has to be something it cannot skip.</p>
+      <p><strong>Models and reasoning effort.</strong> The model is matched to the task. A large model plans and reviews, a mid-size model writes the code, and a small, fast model handles searches, since a search rarely needs a large model's reasoning and costs far less on a small one. Reasoning effort is set the same way: it usually stays at the default and goes up for concurrency, parsers and security work, or after a first attempt has failed.</p>
+      <p><strong>Two subagents.</strong> I wrote two subagents, Explore and worker. Explore runs on the small model, can only read files, and answers with file paths and a sentence or two, so a search never fills the main session's context with whole files. worker runs on the mid-size model, carries out one brief, and reports back in a few lines: the files it changed, the test it ran and the result. This moves the reading and the routine edits to cheaper models and keeps the main session's context for planning and review.</p>
+      <p><strong>The prompt cache.</strong> The model is usually chosen at the start of a session and kept for its whole length. Switching models halfway through throws away the prompt cache, so the full context has to be processed again, while changing the reasoning effort keeps the cache intact.</p>
+      <p><strong>Keeping the context clean.</strong> Sessions tend to stay on a single task, and the context is cleared before moving on to something unrelated, because a model reading past an old conversation is more likely to drift. When a session goes down a wrong path, it is rewound to the point before the mistake, so the failed attempt does not stay in the context and steer what comes next. Command output is trimmed to the failures and the lines that matter, and a status bar shows how full the context is.</p>
+      <p><strong>Tools switched on per project.</strong> Apart from a small core that every project needs, such as the review hook above, plugins, MCP servers, language servers (LSP), hooks and skills are off by default and switched on only in the projects that use them. Many of them add their descriptions or output to the context on every turn, so a tool left on where it is not needed costs tokens for nothing. Inwire, for example, turns on the TypeScript and Rust language servers. Workflows that run many agents in parallel are switched on per session, and only when a task calls for one, because they spend tokens quickly.</p>
+    </div>
+    <p class="muted small">The setup behind this is public: <a href="https://github.com/Doofess/claude-setup" rel="noopener">claude-setup</a>.</p>
   </section>
 
   <section class="section" id="stack" aria-labelledby="stack-h">
