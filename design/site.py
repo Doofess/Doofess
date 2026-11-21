@@ -170,7 +170,12 @@ def images() -> None:
             for name in (names[0], *names[2:]):
                 shutil.copyfile(SHOTS / name, IMG / name)
         for name, _ in p["phones"]:
-            with Image.open(SHOTS / name) as im:  # 540 wide, height from the source's own ratio
+            with Image.open(SHOTS / name) as im:  # at most 540 wide, height from the source's own ratio
+                if im.width <= 540:
+                    im.save(IMG / name, optimize=True)
+                    continue
+                if im.mode == "P":  # a palette image would be resampled without a filter
+                    im = im.convert("RGBA")
                 im.resize((540, round(im.height * 540 / im.width)), Image.LANCZOS).save(IMG / name, optimize=True)
         if p["logo"]:
             shutil.copyfile(SHOTS / p["logo"], IMG / p["logo"])

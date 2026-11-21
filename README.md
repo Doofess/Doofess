@@ -39,7 +39,7 @@ Built with Electron, React, TypeScript and Rust. [Repository](https://github.com
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/card-gymbro-dark.png">
     <source media="(prefers-color-scheme: light)" srcset="assets/card-gymbro-light.png">
-    <img src="assets/card-gymbro-light.png" width="100%" alt="GymBro, an appointment booking system for gyms, Hebrew first. The screenshots show the staff calendar on Windows and the member app on Android. Nine roles, 38 permission grants, about 4,740 Vitest cases in CI, 12 TypeScript projects.">
+    <img src="assets/card-gymbro-light.png" width="100%" alt="GymBro, an appointment booking system for gyms, Hebrew first. The screenshots show the staff calendar on Windows and the member app on Android. 9 roles, 38 permission grants, about 4,740 Vitest cases in CI, 12 TypeScript projects.">
   </picture>
 </a>
 </p>

@@ -11,7 +11,7 @@ PC without them the browser falls back to other fonts and the PNGs come out
 different, so rebuild the cards on Windows.
 
 The numbers on the cards live in PROJECTS below; site.py reads the same list, and
-main() warns when README.md does not mention one of them.
+main() warns when a card's alt text in README.md does not carry one of them.
 """
 from __future__ import annotations
 
@@ -221,13 +221,13 @@ def stack(t: dict) -> str:
 # Buttons
 # --------------------------------------------------------------------------
 BUTTONS = [
-    ("portfolio", "PORTFOLIO PAGE", None, True),
-    ("linkedin", "LINKEDIN", "linkedin", False),
-    ("x", "X", "x", False),
+    ("portfolio", "PORTFOLIO PAGE", "Portfolio page", None, True),
+    ("linkedin", "LINKEDIN", "LinkedIn", "linkedin", False),
+    ("x", "X", "X", "x", False),
 ]
 
 
-def button(t: dict, label: str, icon: str | None, primary: bool) -> str:
+def button(t: dict, label: str, name: str, icon: str | None, primary: bool) -> str:
     text_w = len(label) * 8.6
     icon_w = 24 if icon else 0
     w = round(18 + icon_w + text_w + 34)
@@ -244,7 +244,7 @@ def button(t: dict, label: str, icon: str | None, primary: bool) -> str:
              f'style="font: 700 12.5px {MONO}; letter-spacing: 1.1px; fill: {fg}">{label}</text>')
     ax = w - 24
     body += f'<path d="M{ax} 23 L{ax + 8} 15 M{ax + 2} 15 H{ax + 8} V21" fill="none" stroke="{fg}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="{label.title()}">
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="{name}">
 <rect x="0.75" y="0.75" width="{w - 1.5}" height="{h - 1.5}" rx="6" fill="{fill}" stroke="{t["ink"]}" stroke-width="1.5"/>
 {body}
 </svg>
@@ -388,6 +388,9 @@ def capture(html: Path, png: Path, w: int, h: int, scale: int = 2) -> None:
     )
     if result.returncode or not png.is_file():
         raise SystemExit(f"The browser could not capture {html.name}: {result.stderr.strip()}")
+    with Image.open(png) as im:
+        if im.size != (w * scale, h * scale):
+            raise SystemExit(f"{png.name} came out {im.size[0]} x {im.size[1]}, expected {w * scale} x {h * scale}")
 
 
 def optimise(png: Path, rgb: bool = False) -> None:
@@ -409,9 +412,10 @@ def check_readme() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     for p in PROJECTS:
         for value, label in p["metrics"]:
-            number = value.replace("≈ ", "")
-            if number not in readme:
-                print(f"warning: README.md does not mention {number} ({p['name']}: {label})")
+            # the card's alt text in README.md carries every metric as "<number> <label>"
+            phrase = f"{value.replace('≈ ', '')} {label}"
+            if not re.search(r"(?<![\d,.])" + re.escape(phrase), readme):
+                print(f"warning: README.md does not say '{phrase}' ({p['name']})")
 
 
 def main() -> None:
@@ -421,8 +425,8 @@ def main() -> None:
     for theme, t in THEMES.items():
         (ASSETS / f"banner-{theme}.svg").write_text(banner(t), encoding="utf-8", newline="\n")
         (ASSETS / f"stack-{theme}.svg").write_text(stack(t), encoding="utf-8", newline="\n")
-        for slug, label, icon, primary in BUTTONS:
-            (ASSETS / f"button-{slug}-{theme}.svg").write_text(button(t, label, icon, primary), encoding="utf-8", newline="\n")
+        for slug, label, name, icon, primary in BUTTONS:
+            (ASSETS / f"button-{slug}-{theme}.svg").write_text(button(t, label, name, icon, primary), encoding="utf-8", newline="\n")
         for p in PROJECTS:
             if len(sys.argv) > 1 and p["id"] not in sys.argv[1:]:
                 continue
