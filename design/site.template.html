@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rotem Grinhut: full-stack developer and system designer</title>
+<meta name="description" content="Full-stack developer and system designer in Israel, currently looking for opportunities. Desktop and web apps with TypeScript, React and Rust.">
+<meta property="og:title" content="Rotem Grinhut: full-stack developer and system designer">
+<meta property="og:description" content="Desktop and web apps with TypeScript, React and Rust. Currently looking for opportunities.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://doofess.github.io/Doofess/">
+<meta property="og:image" content="https://doofess.github.io/Doofess/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b1a30'/%3E%3Cpath d='M7 9h8v6H7zM17 17h8v6h-8z' fill='none' stroke='%238fbaff' stroke-width='2'/%3E%3Cpath d='M15 12h6v5' fill='none' stroke='%23ffb454' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+:root {
+  color-scheme: light dark;
+  --page: #e9eff8; --bg: #f6f9fd; --bg2: #eaf1fb; --line: #b5c8e6; --ink: #1f4e9c; --text: #0c2340;
+  --muted: #4c6183; --accent: #b8430b; --chip: #e6eefa; --on-ink: #f6f9fd;
+  --grid: rgba(31, 78, 156, .07); --grid2: rgba(31, 78, 156, .12); --shadow: rgba(12, 35, 64, .16);
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #071223; --bg: #0b1a30; --bg2: #0f2342; --line: #2c4f82; --ink: #8fbaff; --text: #eaf2ff;
+    --muted: #9fb6d8; --accent: #ffb454; --chip: #112a4d; --on-ink: #0b1a30;
+    --grid: rgba(126, 170, 255, .06); --grid2: rgba(126, 170, 255, .11); --shadow: rgba(0, 0, 0, .45);
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0; color: var(--text); font: 17px/1.6 var(--sans);
+  background-color: var(--page);
+  background-image:
+    linear-gradient(var(--grid2) 1px, transparent 1px), linear-gradient(90deg, var(--grid2) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+}
+a { color: var(--ink); text-underline-offset: 3px; }
+a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+img { max-width: 100%; height: auto; display: block; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.label { font: 600 12px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 16px; top: 16px; z-index: 10; background: var(--bg); padding: 8px 12px; }
+
+/* top bar */
+.bar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--page) 88%, transparent);
+       backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; }
+.bar nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.bar nav a { font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
+             color: var(--muted); padding: 8px 10px; border-radius: 4px; }
+.bar nav a:hover { color: var(--ink); background: var(--chip); }
+.brand { font: 700 13px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--text); text-decoration: none; }
+.brand span { color: var(--accent); }
+
+/* sheets */
+.sheet { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 50px -30px var(--shadow); }
+section { margin: 40px 0; }
+.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap;
+              padding: 14px 24px; border-bottom: 1px solid var(--line); }
+.sheet-head b { color: var(--accent); font-weight: 700; }
+
+/* hero */
+.hero { margin-top: 32px; }
+.hero-body { display: grid; grid-template-columns: 1.15fr 1fr; gap: 32px; padding: 40px 32px 36px; align-items: center; }
+h1 { font-size: clamp(42px, 6.4vw, 76px); line-height: 1.02; letter-spacing: -.02em; margin: 0 0 14px; }
+.role { font: 600 clamp(13px, 1.5vw, 16px) var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink); margin: 0 0 22px; }
+.status { display: inline-flex; align-items: center; gap: 12px; padding: 9px 18px 9px 14px; border: 1.5px solid var(--accent);
+          border-radius: 999px; background: var(--bg2); color: var(--accent); font: 700 12.5px var(--mono); letter-spacing: .09em; text-transform: uppercase; }
+.dot { position: relative; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex: none; }
+.dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--accent); animation: pulse 2.4s ease-out infinite; }
+.lede { font-size: 19px; line-height: 1.55; margin: 24px 0 26px; max-width: 34em; }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 9px; padding: 10px 16px; border: 1.5px solid var(--ink); border-radius: 7px;
+       font: 700 12.5px var(--mono); letter-spacing: .09em; text-transform: uppercase; text-decoration: none; color: var(--ink); background: var(--bg); }
+.btn:hover { background: var(--chip); }
+.btn.primary { background: var(--ink); color: var(--on-ink); }
+.btn.primary:hover { filter: brightness(1.08); background: var(--ink); }
+.btn svg { width: 15px; height: 15px; fill: currentColor; }
+.fig svg { width: 100%; height: auto; display: block; }
+.fig .box { fill: var(--bg2); stroke: var(--ink); stroke-width: 1.2; }
+.fig .rule { stroke: var(--line); }
+.fig .cap { font: 600 10.5px var(--mono); letter-spacing: 1.4px; fill: var(--muted); }
+.fig .node { font: 12.5px var(--mono); fill: var(--text); }
+.fig .flow { stroke: var(--ink); stroke-width: 1.4; stroke-dasharray: 4 4; animation: flow 1s linear infinite; }
+.fig .arrow { stroke: var(--ink); stroke-width: 1.4; fill: none; }
+.fig .dim { stroke: var(--muted); }
+.fig .mask { fill: var(--bg); }
+.block { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); margin: 0; }
+.block div { padding: 14px 24px 16px; border-left: 1px solid var(--line); }
+.block div:first-child { border-left: 0; }
+.block dt { font: 600 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.block dd { margin: 4px 0 0; font-weight: 600; }
+
+/* section titles */
+.section-title { display: flex; align-items: center; gap: 16px; margin: 56px 0 20px; }
+.section-title h2 { font-size: 30px; line-height: 1.15; letter-spacing: -.01em; margin: 0; }
+.section-title i { flex: 1; height: 1px; background: var(--line); }
+.intro { max-width: 46em; color: var(--muted); margin: -6px 0 24px; }
+
+/* projects */
+.project { margin: 0 0 28px; }
+.project-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; padding: 28px 28px 30px; }
+.title-row { display: flex; align-items: center; gap: 14px; }
+.title-row img { width: 40px; height: 40px; flex: none; }
+h3 { font-size: 34px; line-height: 1.1; letter-spacing: -.015em; margin: 0; }
+.tagline { color: var(--muted); font-size: 18px; margin: 8px 0 18px; }
+.points { margin: 0; padding: 0; list-style: none; }
+.points li { position: relative; padding: 0 0 12px 22px; font-size: 16px; line-height: 1.55; }
+.points li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 9px; height: 1.5px; background: var(--ink); }
+.metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 18px; margin: 10px 0 20px; }
+.metrics div { border-left: 2px solid var(--ink); padding-left: 12px; }
+.metrics strong { display: block; font: 600 22px/1.2 var(--mono); }
+.metrics span { display: block; font-size: 13.5px; line-height: 1.35; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 20px; padding: 0; list-style: none; }
+.chips li { font: 600 12px var(--mono); padding: 4px 9px; border: 1px solid var(--line); border-radius: 4px; background: var(--chip); color: var(--ink); }
+.note { font-size: 14.5px; color: var(--muted); margin: 0 0 18px; }
+.shots { display: grid; gap: 14px; align-content: start; }
+.shot { display: block; border: 1px solid var(--ink); border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 14px 34px -18px var(--shadow); }
+.shot img { width: 100%; }
+.phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.phones .shot { border-radius: 14px; border-width: 2px; }
+.caption { display: flex; align-items: center; gap: 10px; margin-top: 2px; }
+.caption i { flex: 1; min-width: 12px; height: 1px; background: var(--muted); opacity: .5; }
+.caption span:first-child { white-space: nowrap; }
+
+/* work + stack */
+.cols { display: grid; grid-template-columns: 1fr 1fr; }
+.cols > div { padding: 26px 28px 22px; }
+.cols > div + div { border-left: 1px solid var(--line); }
+.cols h3 { font-size: 20px; margin: 0 0 14px; letter-spacing: 0; }
+.stack { display: grid; grid-template-columns: 1fr 1fr; }
+.stack > div { padding: 22px 28px 24px; border-top: 1px solid var(--line); }
+.stack > div:nth-child(-n+2) { border-top: 0; }
+.stack > div:nth-child(even) { border-left: 1px solid var(--line); }
+.stack ul { display: flex; flex-wrap: wrap; gap: 18px 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+.stack li { width: 84px; text-align: center; font: 12px var(--mono); }
+.stack svg { width: 30px; height: 30px; fill: var(--ink); display: block; margin: 0 auto 8px; }
+
+/* contact */
+.contact { padding: 34px 28px 36px; text-align: center; }
+.contact h2 { font-size: 30px; margin: 0 0 8px; }
+.contact p { color: var(--muted); margin: 0 auto 22px; max-width: 34em; }
+.contact .btns { justify-content: center; }
+footer { padding: 28px 0 48px; text-align: center; }
+
+@keyframes flow { to { stroke-dashoffset: -8; } }
+@keyframes pulse { 0% { transform: scale(1); opacity: .9; } 70%, 100% { transform: scale(2.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fig .flow, .dot::after { animation: none; }
+  .dot::after { opacity: 0; }
+}
+@media (max-width: 860px) {
+  .hero-body, .project-body, .cols, .stack { grid-template-columns: 1fr; }
+  .hero-body { padding: 28px 22px; }
+  .project-body { padding: 22px; gap: 24px; }
+  .block { grid-template-columns: 1fr 1fr; }
+  .block div:nth-child(3) { border-left: 0; }
+  .block div:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .cols > div + div, .stack > div:nth-child(even) { border-left: 0; }
+  .cols > div + div { border-top: 1px solid var(--line); }
+  .stack > div:nth-child(2) { border-top: 1px solid var(--line); }
+  .bar nav a { padding: 8px 6px; }
+  .brand em { display: none; }
+}
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .wrap { padding: 0 14px; }
+  .bar nav a:nth-child(n+3) { display: none; }
+  .status { font-size: 11px; letter-spacing: .05em; padding: 8px 12px; }
+  h3 { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#projects">Skip to projects</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">Rotem Grinhut <em style="font-style:normal"><span>/</span> Portfolio</em></a>
+    <nav aria-label="Sections">
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+      <a href="#work">How I work</a>
+      <a href="#stack">Stack</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+  <section class="sheet hero" aria-labelledby="name">
+    <div class="sheet-head label"><span>Sheet <b>01</b> / Profile</span><span>github.com/Doofess</span></div>
+    <div class="hero-body">
+      <div>
+        <h1 id="name">Rotem Grinhut</h1>
+        <p class="role">Full-stack developer / System designer</p>
+        <p class="status"><span class="dot" aria-hidden="true"></span>Currently looking for opportunities</p>
+        <p class="lede">Full-stack developer and system designer in Israel. I build desktop and web apps with TypeScript, React and Rust.</p>
+        <div class="btns">
+          <a class="btn primary" href="https://www.linkedin.com/in/rotem-grinhut-979547262/" rel="noopener"><!--ICON:linkedin-->LinkedIn</a>
+          <a class="btn" href="https://github.com/Doofess" rel="noopener"><!--ICON:github-->GitHub</a>
+          <a class="btn" href="https://x.com/Rotemgr" rel="noopener"><!--ICON:x-->X</a>
+        </div>
+      </div>
+      <figure class="fig" style="margin:0">
+        <svg viewBox="0 0 400 150" role="img" aria-labelledby="figt">
+          <title id="figt">Figure 1, what I build. Interface: React, TypeScript, Kotlin. Services: TypeScript APIs, Rust services. Data: PostgreSQL, SQLite.</title>
+          <rect class="box" x="1" y="8" width="118" height="92" rx="4"/><text class="cap" x="13" y="29">INTERFACE</text><line class="rule" x1="1" y1="38" x2="119" y2="38"/>
+          <text class="node" x="13" y="58">React</text><text class="node" x="13" y="75">TypeScript</text><text class="node" x="13" y="92">Kotlin</text>
+          <rect class="box" x="143" y="8" width="132" height="92" rx="4"/><text class="cap" x="155" y="29">SERVICES</text><line class="rule" x1="143" y1="38" x2="275" y2="38"/>
+          <text class="node" x="155" y="58">TypeScript APIs</text><text class="node" x="155" y="75">Rust services</text>
+          <rect class="box" x="299" y="8" width="100" height="92" rx="4"/><text class="cap" x="311" y="29">DATA</text><line class="rule" x1="299" y1="38" x2="399" y2="38"/>
+          <text class="node" x="311" y="58">PostgreSQL</text><text class="node" x="311" y="75">SQLite</text>
+          <line class="flow" x1="119" y1="54" x2="143" y2="54"/><path class="arrow" d="M138 50 L143 54 L138 58"/>
+          <line class="flow" x1="275" y1="54" x2="299" y2="54"/><path class="arrow" d="M294 50 L299 54 L294 58"/>
+          <line class="dim" x1="1" y1="128" x2="399" y2="128"/><line class="dim" x1="1" y1="122" x2="1" y2="134"/><line class="dim" x1="399" y1="122" x2="399" y2="134"/>
+          <rect class="mask" x="110" y="119" width="180" height="18"/><text class="cap" x="200" y="132" text-anchor="middle">FIG. 1  WHAT I BUILD</text>
+        </svg>
+      </figure>
+    </div>
+    <dl class="block">
+      <div><dt>Based in</dt><dd>Israel</dd></div>
+      <div><dt>Languages</dt><dd>Hebrew, English</dd></div>
+      <div><dt>Builds</dt><dd>Desktop and web apps</dd></div>
+      <div><dt>With</dt><dd>TypeScript, React, Rust</dd></div>
+    </dl>
+  </section>
+
+  <div class="section-title" id="projects"><h2>Projects</h2><i></i><span class="label">Sheets 02 to 05</span></div>
+  <p class="intro">Each repository's README has the architecture, the decisions behind it and how it is tested.</p>
+<!--PROJECTS-->
+
+  <div class="section-title" id="work"><h2>How I work</h2><i></i><span class="label">Sheet 06</span></div>
+  <section class="sheet" aria-label="How I work" style="margin-top:0">
+    <div class="cols">
+      <div>
+        <p class="label">My part</p>
+        <p style="margin:10px 0 16px">These projects are built with AI coding agents (Claude Code). In every one of them:</p>
+        <ul class="points">
+          <li>I make the design choices.</li>
+          <li>I make all the UX/UI decisions.</li>
+          <li>I read and review the code the agents write.</li>
+          <li>I test the apps by hand.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">The workflow</p>
+        <ul class="points" style="margin-top:14px">
+          <li>Work runs in planned passes. A main session writes the plan, worker agents carry out the steps, and each result is checked and tested before the next step.</li>
+          <li>A pull request is merged only after a review. A hook refuses the merge until the latest commit has been reviewed.</li>
+          <li>Token use is kept low. The model is chosen per task and tools are switched on per project.</li>
+          <li>Sessions are run with the context window, turns and the prompt cache in mind.</li>
+        </ul>
+        <p class="note" style="margin:6px 0 0">The setup behind this is public: <a href="https://github.com/Doofess/claude-setup" rel="noopener">claude-setup</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-title" id="stack"><h2>What I build with</h2><i></i><span class="label">Sheet 07</span></div>
+  <section class="sheet" aria-label="What I build with" style="margin-top:0">
+    <div class="stack">
+<!--STACK-->
+    </div>
+  </section>
+
+  <section class="sheet contact" id="contact" aria-labelledby="contact-h">
+    <p class="status" style="margin:0 0 18px"><span class="dot" aria-hidden="true"></span>Currently looking for opportunities</p>
+    <h2 id="contact-h">Contact</h2>
+    <p>The quickest way to reach me is LinkedIn. Hebrew and English.</p>
+    <div class="btns">
+      <a class="btn primary" href="https://www.linkedin.com/in/rotem-grinhut-979547262/" rel="noopener"><!--ICON:linkedin-->LinkedIn</a>
+      <a class="btn" href="https://github.com/Doofess" rel="noopener"><!--ICON:github-->GitHub</a>
+      <a class="btn" href="https://x.com/Rotemgr" rel="noopener"><!--ICON:x-->X</a>
+    </div>
+  </section>
+</main>
+<footer class="wrap label">Rotem Grinhut, 2026</footer>
+</body>
+</html>
