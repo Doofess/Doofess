@@ -3,30 +3,41 @@
     python design/site.py
 
 GitHub Pages serves docs/ at https://doofess.github.io/Doofess/.
+
+Run it on Windows 11: the link preview image is drawn by a headless browser with Segoe UI, and comes out
+different with another font.
+
+docs/img belongs to this script. Every file the page uses is written there on each run, and a file the run
+did not write is removed at the end, so keep nothing else in that folder.
 """
 from __future__ import annotations
 
 import html
 import re
 import shutil
-from pathlib import Path
 
 from PIL import Image
 
-from build import DESIGN, ROOT, SHOTS, STACK, THEMES, TMP, banner, capture, icon_path, optimise
-from build import PROJECTS as CARDS
-
-# The numbers are kept once, in build.py.
-METRICS = {c["id"]: c["metrics"] for c in CARDS}
+from build import DESIGN, ROOT, SANS, SHOTS, THEMES, TMP, capture, icon_path, optimise
 
 DOCS = ROOT / "docs"
 IMG = DOCS / "img"
 
+# A screenshot runs across the page. In a window at least 1060 px wide that is 1012 px, and three phone
+# screenshots in a row are 324 px each. The page offers a copy of exactly that width, which a 1x screen
+# shows one to one, and a larger one for high-density screens.
+FULL = 1012
+FULL_SIZES = "(min-width: 1060px) 1012px, calc(100vw - 48px)"
+PHONE = 324
+PHONE_SIZES = "(min-width: 1060px) 324px, calc(33vw - 30px)"
+
+WRITTEN: set[str] = set()  # the files this run put in docs/img; main() removes the others at the end
+
 PROJECTS = [
     dict(
-        id="inwire", sheet="02", name="Inwire", logo="inwire-logo.svg",
+        id="inwire", name="Inwire", logo="inwire-logo.svg",
         tagline="Desktop packet analyzer for Windows",
-        status="Version 0.5.0 / Windows",
+        status="Version 0.5.0, Windows",
         points=[
             "The app runs without administrator rights: a separate Rust service holds the Npcap capture handle and streams frames to it over a named pipe.",
             "Packet list virtualised by hand, reading older rows back from disk. In replays of a recorded burst on my PC the live view kept up with about 85,000 frames a second.",
@@ -38,15 +49,14 @@ PROJECTS = [
         note=None,
         links=[("Repository", "https://github.com/Doofess/inwire", True),
                ("How it works (PDF)", "https://github.com/Doofess/inwire/blob/main/docs/how-inwire-works.pdf", False)],
-        shots=[("inwire-capture.png", "Inwire during a live capture: packet list, decoded layers and raw bytes"),
-               ("inwire-monitoring.png", "Inwire's monitoring view")],
+        main=("inwire-capture.png", "Inwire during a live capture: packet list, decoded layers and raw bytes", "Live capture"),
+        more=[("inwire-monitoring.png", "Inwire's monitoring view", "Monitoring")],
         phones=[],
-        caption="Live capture and monitoring",
     ),
     dict(
-        id="gymbro", sheet="03", name="GymBro", logo=None,
+        id="gymbro", name="GymBro", logo=None,
         tagline="Appointment booking system for gyms, Hebrew first and right to left",
-        status="Staging / Source private",
+        status="Staging, source private",
         points=[
             "Members book sessions with their trainer on Android; staff run calendars, packages and the branch from Android or a Windows desktop app. Both clients call one TypeScript API, hosted on Vercel.",
             "Postgres refuses a double booking with an exclusion constraint, and a concurrency test proves it.",
@@ -57,16 +67,17 @@ PROJECTS = [
         stack=["TypeScript", "Kotlin", "Jetpack Compose", "PostgreSQL", "Electron", "React", "Hono"],
         note="Runs in staging only: nothing is in production and no real member uses it. The source is private; the repository documents the system. The screenshots use made-up data.",
         links=[("Architecture and screenshots", "https://github.com/Doofess/gymbro", True)],
-        shots=[("gymbro-windows-calendar.png", "GymBro's staff calendar in the Windows app, in Hebrew")],
+        main=("gymbro-windows-calendar.png", "GymBro's staff calendar in the Windows app, in Hebrew", "Staff calendar on Windows"),
+        more=[],
         phones=[("gymbro-android-calendar.png", "The trainer calendar on Android, dark theme"),
                 ("gymbro-android-booking.png", "Booking a session on Android, in English"),
                 ("gymbro-android-booking-he.png", "Booking a session on Android, in Hebrew")],
-        caption="Staff calendar on Windows, member app on Android",
+        phones_caption="The app on Android: trainer calendar, and booking in English and Hebrew",
     ),
     dict(
-        id="marshell", sheet="04", name="Marshell", logo="marshell-icon.svg",
+        id="marshell", name="Marshell", logo="marshell-icon.svg",
         tagline="Windows app for AI coding-agent CLIs from any vendor",
-        status="Alpha / Windows 11",
+        status="Alpha, Windows 11",
         points=[
             "Gives Claude Code, Codex CLI and other vendors' agents a session list with live status, approval cards and searchable history, while each agent stays a plain terminal.",
             "A Rust core runs an HTTP and WebSocket server on localhost inside the app and owns the terminals, sessions and history; the React UI talks to it through that API.",
@@ -78,13 +89,14 @@ PROJECTS = [
         note=None,
         links=[("Repository", "https://github.com/Doofess/marshell", True),
                ("Alpha release", "https://github.com/Doofess/marshell/releases/tag/v0.1.0-alpha.1", False)],
-        shots=[("marshell-approval.png", "Marshell showing an agent's permission request as a card with Deny and Allow once"),
-               ("marshell-sessions.jpg", "Marshell with sessions from three different agent CLIs in one list")],
+        main=("marshell-approval.png", "Marshell showing an agent's permission request as a card with Deny and Allow once",
+              "An agent's permission request, shown as a card"),
+        more=[("marshell-sessions.jpg", "Marshell with sessions from three different agent CLIs in one list",
+               "Three vendors' agents in one list")],
         phones=[],
-        caption="An approval card, and three vendors in one list",
     ),
     dict(
-        id="claude-setup", sheet="05", name="claude-setup", logo=None,
+        id="claude-setup", name="claude-setup", logo=None,
         tagline="My Claude Code setup, kept as code",
         status="Windows",
         points=[
@@ -97,108 +109,159 @@ PROJECTS = [
         stack=["Python", "PowerShell", "TypeScript"],
         note=None,
         links=[("Repository", "https://github.com/Doofess/claude-setup", True)],
-        shots=[("claude-setup-session-cards.png", "The modified Claude Code session view, with prompts and agent runs as cards"),
-               ("claude-setup-statusbar-crop.png", "The left part of the status bar: repository, branch, pull request, model, effort and the context meter",
-                "claude-setup-statusbar.png")],
+        main=("claude-setup-session-cards.png", "The modified Claude Code session view, with prompts and agent runs as cards",
+              "Session view"),
+        more=[],
         phones=[],
-        caption="Session view and status bar",
+        # the bar is 2880 px wide and was captured at 2x: it is cut in two at 1506, a gap between two of its
+        # elements, and each half is shown at its real size
+        strips=("claude-setup-statusbar.png", 2, [
+            ((0, 1506), "The status bar, left half: repository, branch, pull request, model, effort and the context meter"),
+            ((1506, 2880), "The status bar, right half: the 5-hour and 7-day usage left, the cost and the time"),
+        ], "Status bar, in two halves"),
     ),
 ]
 
-ARROW = '<svg viewBox="0 0 16 16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M4 12 L12 4 M6 4 H12 V10"/></svg>'
+STACK = [
+    ("Interface", "React, TypeScript, Vite, Tailwind CSS"),
+    ("Desktop and mobile", "Electron, Tauri 2, Kotlin, Jetpack Compose"),
+    ("Services and data", "Rust, Node.js, PostgreSQL, Supabase, SQLite"),
+    ("Tooling", "GitHub Actions, Vitest, Playwright, Python, PowerShell"),
+]
 
 
 def icon(slug: str) -> str:
     return f'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{icon_path(slug)}"/></svg>'
 
 
-def shot(name: str, alt: str, full: str | None = None) -> str:
-    with Image.open(IMG / name) as im:
-        w, h = im.size
-    return (f'<a class="shot" href="img/{html.escape(full or name)}"><img src="img/{html.escape(name)}" width="{w}" height="{h}" '
-            f'loading="lazy" alt="{html.escape(alt)}"></a>')
+def resized(name: str, width: int) -> tuple[str, int]:
+    """Puts a screenshot in docs/img, made `width` px wide when it is wider. Returns the file's name and width."""
+    src = SHOTS / name
+    with Image.open(src) as im:
+        if im.width <= width:
+            shutil.copyfile(src, IMG / name)
+            WRITTEN.add(name)
+            return name, im.width
+        if im.mode == "P":  # a palette image would be resampled without a filter
+            im = im.convert("RGBA")
+        small = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
+    out = f"{src.stem}-{width}{src.suffix}"
+    small.save(IMG / out, optimize=True, **({"quality": 90} if src.suffix == ".jpg" else {}))
+    WRITTEN.add(out)
+    return out, width
+
+
+def shot(name: str, alt: str, caption: str | None = None, width: int = FULL, sizes: str = FULL_SIZES,
+         largest: int | None = None) -> str:
+    """A screenshot that links to its largest copy. A 1x screen gets the copy that is `width` px wide.
+    The largest copy is the screenshot itself, or `largest` px wide when that is given."""
+    e = html.escape
+    one, w = resized(name, width)
+    big, bw = resized(name, largest or 10 ** 6)
+    with Image.open(IMG / one) as im:
+        h = im.height
+    srcset = f' srcset="img/{e(one)} {w}w, img/{e(big)} {bw}w" sizes="{sizes}"' if big != one else ""
+    out = (f'<a class="shot" href="img/{e(big)}"><img src="img/{e(one)}"{srcset} width="{w}" height="{h}" '
+           f'loading="lazy" alt="{e(alt)}"></a>')
+    if caption:
+        out += f'<p class="caption muted small">{e(caption)}</p>'
+    return out
+
+
+def strips(name: str, density: int, parts: list, caption: str) -> str:
+    """A wide, low screenshot cut into parts, one under the other. Each part is shown at the size it has on
+    screen (its pixels divided by the capture's density), so its text is not shrunk. All link to the whole."""
+    e = html.escape
+    src = SHOTS / name
+    shutil.copyfile(src, IMG / name)
+    WRITTEN.add(name)
+    out = ""
+    with Image.open(src) as im:
+        for i, ((left, right), alt) in enumerate(parts, 1):
+            part = f"{src.stem}-part{i}{src.suffix}"
+            im.crop((left, 0, right, im.height)).save(IMG / part, optimize=True)
+            WRITTEN.add(part)
+            out += (f'<a class="shot strip" href="img/{e(name)}"><img src="img/{e(part)}" width="{(right - left) // density}" '
+                    f'height="{im.height // density}" loading="lazy" alt="{e(alt)}"></a>')
+    return f'\n      <div class="more">{out}<p class="caption muted small">{e(caption)}</p></div>'
 
 
 def project(p: dict) -> str:
     e = html.escape  # every string from PROJECTS is plain text and is escaped here
-    logo = f'<img src="img/{e(p["logo"])}" alt="" width="40" height="40">' if p["logo"] else ""
+    logo = ""
+    if p["logo"]:
+        shutil.copyfile(SHOTS / p["logo"], IMG / p["logo"])
+        WRITTEN.add(p["logo"])
+        logo = f'<img src="img/{e(p["logo"])}" alt="" width="30" height="30">'
     points = "".join(f"<li>{e(x)}</li>" for x in p["points"])
-    metrics = "".join(f"<div><strong>{e(v)}</strong><span>{e(label)}</span></div>" for v, label in METRICS[p["id"]])
-    chips = "".join(f"<li>{e(s)}</li>" for s in p["stack"])
-    note = f'<p class="note">{e(p["note"])}</p>' if p["note"] else ""
+    note = f'<p class="muted small">{e(p["note"])}</p>' if p["note"] else ""
     links = "".join(
-        f'<a class="btn{" primary" if primary else ""}" href="{e(url)}" rel="noopener">{e(label)}{ARROW}</a>'
+        f'<a class="btn{" primary" if primary else ""}" href="{e(url)}" rel="noopener">{e(label)}</a>'
         for label, url, primary in p["links"]
     )
-    shots = "".join(shot(*x) for x in p["shots"])
+    more = "".join(f'\n      <div class="more">{shot(*x)}</div>' for x in p["more"])
     if p["phones"]:
-        shots += '<div class="phones">' + "".join(shot(n, a) for n, a in p["phones"]) + "</div>"
+        phones = "".join(shot(name, alt, None, PHONE, PHONE_SIZES, 2 * PHONE) for name, alt in p["phones"])
+        more += (f'\n      <div class="more"><div class="phones">{phones}</div>'
+                 f'<p class="caption muted small">{e(p["phones_caption"])}</p></div>')
+    if p.get("strips"):
+        more += strips(*p["strips"])
     return f'''
-  <section class="sheet project" id="{p["id"]}" aria-labelledby="{p["id"]}-h">
-    <div class="sheet-head label"><span>Sheet <b>{p["sheet"]}</b> / Project</span><span>{e(p["status"])}</span></div>
-    <div class="project-body">
-      <div class="shots">
-        {shots}
-        <p class="caption label"><span>Fig. {int(p["sheet"])}</span><i></i><span>{e(p["caption"])}</span></p>
-      </div>
-      <div>
-        <div class="title-row">{logo}<h3 id="{p["id"]}-h">{e(p["name"])}</h3></div>
-        <p class="tagline">{e(p["tagline"])}</p>
+    <article class="project" id="{p["id"]}" aria-labelledby="{p["id"]}-h">
+      <div class="title-row">{logo}<h3 id="{p["id"]}-h">{e(p["name"])}</h3><span class="status muted small">{e(p["status"])}</span></div>
+      <p class="tagline">{e(p["tagline"])}</p>
+      {shot(*p["main"])}
+      <div class="project-text">
         <ul class="points">{points}</ul>
-        <div class="metrics">{metrics}</div>
-        <ul class="chips" aria-label="Built with">{chips}</ul>
-        {note}
-        <div class="btns">{links}</div>
-      </div>
-    </div>
-  </section>'''
+        <div class="facts">
+          <h4>Built with</h4>
+          <p>{e(", ".join(p["stack"]))}</p>
+          {note}
+          <div class="btns">{links}</div>
+        </div>
+      </div>{more}
+    </article>'''
 
 
 def stack_html() -> str:
-    names = {"Compose": "Jetpack Compose", "Actions": "GitHub Actions"}
-    out = ""
-    for title, items in STACK:
-        cells = "".join(f"<li>{icon(slug)}{names.get(name, name)}</li>" for slug, name in items)
-        out += f'      <div><p class="label" style="margin:0">{title.capitalize()}</p><ul>{cells}</ul></div>\n'
-    return out
+    return "".join(f"      <dt>{html.escape(k)}</dt><dd>{html.escape(v)}</dd>\n" for k, v in STACK)
 
 
-def images() -> None:
-    IMG.mkdir(parents=True, exist_ok=True)
-    for p in PROJECTS:
-        for names in p["shots"]:
-            for name in (names[0], *names[2:]):
-                shutil.copyfile(SHOTS / name, IMG / name)
-        for name, _ in p["phones"]:
-            with Image.open(SHOTS / name) as im:  # at most 540 wide, height from the source's own ratio
-                if im.width <= 540:
-                    im.save(IMG / name, optimize=True)
-                    continue
-                if im.mode == "P":  # a palette image would be resampled without a filter
-                    im = im.convert("RGBA")
-                im.resize((540, round(im.height * 540 / im.width)), Image.LANCZOS).save(IMG / name, optimize=True)
-        if p["logo"]:
-            shutil.copyfile(SHOTS / p["logo"], IMG / p["logo"])
-    # link preview image: the dark banner on the page colour, 1200 x 630
+def preview_image() -> None:
+    """The link preview image, 1200 x 630, in the page's light colours."""
+    t = THEMES["light"]
     TMP.mkdir(exist_ok=True)
     page = TMP / "og.html"
     page.write_text(
-        '<!doctype html><meta charset="utf-8"><style>html,body{margin:0;width:1200px;height:630px;background:#071223;'
-        'display:grid;place-items:center}svg{width:1120px;height:auto}</style>' + banner(THEMES["dark"]),
+        f'''<!doctype html><meta charset="utf-8"><style>
+html, body {{ margin: 0; width: 1200px; height: 630px; background: {t["page"]}; color: {t["fg"]}; font-family: {SANS}; }}
+body {{ display: flex; flex-direction: column; justify-content: center; padding: 0 96px; box-sizing: border-box; }}
+h1 {{ font-size: 104px; line-height: 1.05; letter-spacing: -3px; font-weight: 600; margin: 0; }}
+p {{ font-size: 40px; color: {t["muted"]}; margin: 22px 0 0; }}
+.open {{ font-size: 30px; font-weight: 600; color: {t["fg"]}; margin-top: 56px; display: flex; align-items: center; gap: 18px; }}
+.open::before {{ content: ""; width: 16px; height: 16px; border-radius: 50%; background: {t["accent"]}; }}
+</style><h1>Rotem Grinhut</h1><p>Full-stack developer and system designer</p>
+<p class="open">Currently looking for opportunities</p>''',
         encoding="utf-8",
     )
     capture(page, IMG / "og.png", 1200, 630, scale=1)
     optimise(IMG / "og.png", rgb=True)
+    WRITTEN.add("og.png")
 
 
 def main() -> None:
-    images()
+    IMG.mkdir(parents=True, exist_ok=True)
+    preview_image()
     page = (DESIGN / "site.template.html").read_text(encoding="utf-8")
     page = page.replace("<!--PROJECTS-->", "".join(project(p) for p in PROJECTS))
     page = page.replace("<!--STACK-->", stack_html())
     page = re.sub(r"<!--ICON:(\w+)-->", lambda m: icon(m.group(1)), page)
     (DOCS / "index.html").write_text(page, encoding="utf-8", newline="\n")
     (DOCS / ".nojekyll").write_text("", encoding="utf-8")
+    # only now, with the page and every image written, remove what an older page left behind
+    for old in IMG.iterdir():
+        if old.is_file() and old.name not in WRITTEN:
+            old.unlink()
     total = sum(f.stat().st_size for f in DOCS.rglob("*") if f.is_file())
     print("docs/index.html", (DOCS / "index.html").stat().st_size // 1024, "KB; docs total", total // 1024, "KB")
 
